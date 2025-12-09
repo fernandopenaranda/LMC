@@ -1,0 +1,47 @@
+using CSV
+using DataFrames
+# reshapedata(PID) #run
+using DataFrames, LinearAlgebra, CSV
+using PooledArrays
+
+#PID =  "MR2567402-2281278"
+reshapemrdata(PID::Number) = reshapedata(string(PID))
+function reshapemrdata(PID::String)
+    str0 = "/Users/fernandopenaranda/Documents/Work/PostdocDonosti/Projects/HeavyFermion_Optics/MRDATA" * "/" * PID
+    matching_mrs = filter(x -> endswith(basename(x), "_mr_qah.csv") || endswith(basename(x), "_mr_vp.csv"), readdir(str0, join=true))
+    matching_ns = filter(x -> endswith(basename(x), "_ns_qah.csv") || endswith(basename(x), "_ns_vp.csv"), readdir(str0, join=true))
+    nlist = []
+    mrxxxlist = []
+    mrxxlist = []
+    mrratlist = []
+    for mr in matching_mrs
+        σxxx, σxx, rat = parse_pooled_tuple(CSV.read(mr, DataFrame).omegas)
+        push!(mrxxxlist, σxxx)
+        push!(mrxxlist, σxx)
+        push!(mrratlist, rat)
+    end
+
+    for n in matching_ns
+        push!(nlist, CSV.read(n, DataFrame).omegas[1])
+    end        
+    # save_arrays(str0 * "/joined_ns.csv", nlist)
+    # save_arrays(str0 * "/joined_mr.csv", mrlist)
+    return nlist, mrxxxlist, mrxxlist, mrratlist
+end
+
+readpresets(PID::Number) = readpresets(string(PID))
+function readpresets(PID::String)
+    l = CSV.read("/Users/fernandopenaranda/Documents/Work/PostdocDonosti/Projects/HeavyFermion_Optics/MRDATA" * "/" * PID * "/eval_presets.txt", DataFrame)
+    return l
+end
+
+
+
+function parse_pooled_tuple(pv::PooledArrays.PooledVector{String})
+    str = strip(pv[1], ['(', ')', '"'])  # Get the string and clean it
+    parts = split(str, ",")
+    a = parse(Float64, strip(parts[1]))
+    b = parse(Float64, strip(parts[2]))
+    c = parse(Float64, strip(parts[3]))
+    return a, b, c
+end
