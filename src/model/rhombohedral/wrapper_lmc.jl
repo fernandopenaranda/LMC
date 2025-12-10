@@ -107,7 +107,7 @@ kresolvedlmc(pR::Params_rhombohedral, p::Planar_σijk_presets; Ω_contr = true, 
 """kresolved inplane berry curvature"""
 k_Omegain(p::Planar_σijk_presets, q) = Optics_in_the_length_gauge.k_Ωi_fs(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
 """kresolved outofplane berry curvature"""
-k_Omegaz(p::Planar_σijk_presets, q) = Optics_in_the_length_gauge.k_Ωz_fs(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
+k_Omegaz(p::Planar_σijk_presets, q) = Optics_in_the_length_gauge.k_Ωxy_fn(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
 """kresolved omm"""
 k_d_OMM(p::Planar_σijk_presets, q) = Optics_in_the_length_gauge.k_d_OMM_fs(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
 

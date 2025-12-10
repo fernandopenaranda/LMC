@@ -14,6 +14,8 @@ function kresolved_Ωz(pR::Params_rhombohedral, p::Planar_σijk_presets; points 
     integrand(q) = k_Omegaz(p, q)
     return evalmat(pR, integrand, points)
 end
+
+
 """
 function k-resolved Ωin
 """

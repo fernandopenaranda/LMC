@@ -28,7 +28,6 @@ end
 
 function abcNplotbandsk(ax::Axis, N, kpoints, p; ylims = [-1, 1], res = (500, 550), color = :black)
     abcplotbands!(ax, real.(abck_Nbands(N, kpoints, p)), ylimits = ylims, color = color)
-    fig
 end
 
 abcplotbandsk(mat::Array, nk; kw...) = abcplotbands!(Figure(size = (500, 550)), real.(mat), nk; kw...)
