@@ -53,14 +53,14 @@ function abc_Nlayer(N, k::Number, θ, p = params_rhombohedral())
     triads = find_triads(N)
     [-p.μ X_NLG(triads, k, θ, p); conj(X_NLG(triads, k, θ, p)) -p.μ] +  y(p)*(k)^2 .* 1I + Ezterm + Valleypolarization 
 end
-y(p) = 2*(p.γ0*p.γ4/p.γ1)
+y(p) = 3/2*(p.γ0*p.γ4/p.γ1)
 
 function X_NLG(triads, k, θ, p)
     θ += ifelse(p.ξ==1, 0, π) # to account for the two valleys
     val = 0+0im
     for (n1, n2, n3) in triads
         val += fact_triad(n1,n2,n3) * 1/(-p.γ1)^(n1+n2+n3-1) *
-            (p.γ0*k*cis(θ))^n1 * (p.γ3*k*cis(-θ))^n2 * (p.γ2/2)^n3
+            (√3/2 * p.γ0*k*cis(θ))^n1 * (√3/2 * p.γ3*k*cis(-θ))^n2 * (p.γ2/2)^n3
     end
     return val
 end
@@ -118,7 +118,7 @@ dkXNLG(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3, p) * (n1+n2) * k^(n1+n2-1) * ci
 
 dθXNLG(n1,n2,n3, k, θ, p) = 1im* prefactor(n1,n2,n3, p) * k^(n1+n2) * (n1-n2) * cis(θ*(n1-n2))
 
-prefactor(n1,n2,n3, p) = fact_triad(n1,n2,n3)*(1/(-p.γ1)^(n1+n2+n3-1))*(p.γ2/2)^n3 * p.γ0^n1 * p.γ3^n2 
+prefactor(n1,n2,n3, p) = fact_triad(n1,n2,n3)*(1/(-p.γ1)^(n1+n2+n3-1))*(p.γ2/2)^n3 * (√3/2*p.γ0)^n1 * (√3/2*p.γ3)^n2 
 
 fact_triad(n1,n2,n3) = 
     factorial(n1+n2+n3)/(factorial(n1)*factorial(n2)*factorial(n3))
@@ -150,6 +150,10 @@ rzNlg(N, ψs) = d * (N-1) * ψs' * σz * ψs # in Angstroms
 # Pentalayer
 #############
 abc_pentalayer(k::Array, p = params_rhombohedral()) = abc_Nlayer(5, norm(k), atan(k[2], k[1]), p)
+
+
+
+
 # abc_pentalayer(k::Array, p = params_rhombohedral()) = abc_pentalayer(norm(k), atan(k[2], k[1]), p)
 
 # function abc_pentalayer(k::Number, θ, p = params_rhombohedral()) 

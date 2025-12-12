@@ -15,7 +15,6 @@ function kresolved_Ωz(pR::Params_rhombohedral, p::Planar_σijk_presets; points 
     return evalmat(pR, integrand, points)
 end
 
-
 """
 function k-resolved Ωin
 """
@@ -31,7 +30,7 @@ end
 
 """evaluator of a function f in the BZ"""
 function evalmat(p, f, points)
-    cnst = p.γ1/p.γ0 *√3/2 
+    cnst = p.γ1/(p.γ0 *√3/2)
     kxs = range(-cnst ,cnst, length = points)
     kys = range(-cnst, cnst, length = points)
     Zs = [f([kx, ky]) for kx in kxs, ky in kys]
@@ -57,9 +56,9 @@ function plotmap!(ax, kx, ky, Zs; colmap = missing, colrange = missing)
         cmap = cgrad(colmap) 
     end
     if isa(colrange, Missing)
-        hm = heatmap!(ax, kx, ky, real(Zs))#, colormap = cgrad([:red,:black]))
+        hm = heatmap!(ax, kx, ky, real(Zs), rasterize = true)#, colormap = cgrad([:red,:black]))
     else
-        hm = heatmap!(ax, kx, ky, real(Zs), colormap = cmap, colorrange= colrange)
+        hm = heatmap!(ax, kx, ky, real(Zs), colormap = cmap, colorrange= colrange, rasterize = true)
     end
     return hm
     # cb = Colorbar(fig[1, 2], hm)

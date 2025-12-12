@@ -29,7 +29,7 @@ path very close to the K_ξ point, where the two band model works.
 momenta is adimensional
 """
 function abcbz_path_gamma_k_m_gamma(nk::Int, p)
-    coef = p.γ1/p.γ0 *√3/2
+    coef = p.γ1/(p.γ0 *√3/2)
     function interpolate(p1, p2, n)
         [(p1[1] + (p2[1] - p1[1]) * t, p1[2] + (p2[2] - p1[2]) * t) for t in range(0, stop=1, length=n+1)[1:end-1]]
     end

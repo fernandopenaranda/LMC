@@ -40,7 +40,7 @@ function abcplotbands!(f::Figure, mat, nk; dots = false, color = missing, ylimit
             lines!(ax, xarr , (mat[i,:]), color = ifelse(isa(color,Missing), :lightgray, color))
         end
  
-    ylims!(ax, -0.05*390,0.05*390)
+    ylims!(ax, -0.04*390,0.04*390)
     ax.xticks = ([nk], ["K_ξ"])
     return f
 end

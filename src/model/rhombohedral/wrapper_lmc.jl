@@ -31,7 +31,7 @@ function xxx_lmc_presets(N, p::Params_rhombohedral; T = 10, τ = 200, evals = 10
     
     rz(q, ψs) = rzNlg(N, ψs)  
     # integral bounds (around the valley)
-    cnst = p.γ1/p.γ0 *√3/2
+    cnst = p.γ1/(p.γ0 *√3/2)
     xbounds = [-cnst-ϵ, cnst]   # this is a ratio of energies, convention independent
     ybounds = [-cnst-ϵ, cnst]   
     # computation presets
@@ -62,7 +62,7 @@ function xx_drude_presets(N, p::Params_rhombohedral;
     h(q) = abc_Nlayer(N, q, p) .* unit_convention_two_packages_E
     dhx(q) = dhxNlg(N, q, p)   .* unit_convention_two_packages_E
     # integral bounds (around the valley)
-    cnst = p.γ1/p.γ0 * √3/2
+    cnst = p.γ1/(p.γ0 * √3/2)
     xbounds = [-cnst-ϵ, cnst]   # this is a ratio of energies, 
     # convention independent
     ybounds = [-cnst-ϵ, cnst]   
@@ -75,8 +75,8 @@ function xx_drude_presets(N, p::Params_rhombohedral;
 end
 
 """ density of states call to Optics_in_the_length_gauge. Arguments in meV """
-c_dos(p::Planar_σijk_presets, μlist; η = 0.005) = 
-    Optics_in_the_length_gauge.dos(p.a0, p.h, p.computation.xbounds, p.computation.ybounds, μlist ./ 1e3, η = η/1e3, evals = p.computation.evals)
+c_dos(p::Planar_σijk_presets, μlist; η = 0.005, evals = 100) = 
+    Optics_in_the_length_gauge.dos(p.a0, p.h, p.computation.xbounds, p.computation.ybounds, μlist ./ 1e3, η = η/1e3, evals = evals)
 
 """ quantum anomalous Hall response presets builder """
 σxyahe_presets(N, μ, ξ, p::Params_rhombohedral; kws...) = qah_presets(N, :x, :y, μ, ξ, p; kws...)
@@ -90,7 +90,7 @@ function qah_presets(N, dirJ, dirE, p::Params_rhombohedral; T = 10, evals = 100,
     dh(q) = [dhx(q), dhy(q)]
     rz(q, ψs) = rzNlg(N, ψs)  
     # integral bounds (around the valley)
-    cnst = p.γ1/p.γ0 *√3/2
+    cnst = p.γ1/(p.γ0 *√3/2)
     xbounds = [-cnst-ϵ, cnst]   # this is a ratio of energies, convention independent
     ybounds = [-cnst-ϵ, cnst]   
     # computation presets
