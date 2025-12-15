@@ -90,3 +90,65 @@ function plot_dos!(ax, ω, js)
     end
     axislegend(ax)
 end
+
+
+#_________________________________________________________________________________________
+# Root finder. Worse than the interpolation strategy
+#_________________________________________________________________________________________ 
+using NLsolve, QuadGK, Interpolations
+
+"""computes the dependency of the chemical potential for each spin species assuming a 
+SU(4) and SU(2) local Hartree interactions.
+The problem is to minimize the grand potential with respect to n_α. To do so we have to
+solve a system of coupled non-linear (integral) equations. 
+The most practical approach is to interpolate the density of states for some given presets
+Valid only at T=0, there is another approach.
+"""
+function μ_α(p::Planar_σijk_presets; μ = 0, U =0, J = 0, evals = 1e2, η = 0.05, iterations::Int64 = 10)
+    println("Initializing...")
+    _, func = interpolated_dos(p; evals = evals, η = η)
+    I0 = Integ(func, μ)
+    function G!(F, μ0s)
+        μI, μII = μ0s
+        I1 = Integ(func, μI)
+        I2 = Integ(func, μII)
+        F[1] = μI -μ + U * (2I2 + I1)
+        F[2] = μII-μ + U * (2I2 + I1)
+        # add constraint or impose it afterwards
+    end
+    μ0s = [rand(), rand()] .*μ #,1e10] # initial seeds
+    println("Solving the nonlinear system of equations...")
+    sol = nlsolve(G!, μ0s, iterations = iterations, show_trace = true) 
+    x_sol, y_sol = sol.zero
+    return x_sol, y_sol 
+end
+
+
+
+function μ_αT(p::Planar_σijk_presets;μ = 0, U =0, evals = 1e2, η = 0.05, iterations = 10)
+    A = (√3/2)* (a0*1e-10)^2   # edit
+    n(ε) = rh_filling(p, ε, T = T, ϵ = 1e-7, evals = evals)
+    function G!(F, μ0s)
+        μI, μII = μ0s
+        F[1] = μI-μ + 3U*A*n(μII) 
+        F[2] = μII-μ + U*A*(2n(μII) +n(μI))
+    end
+    μ0s = [μ-μ/10, μ+μ/10] # initial seeds
+    # solve the system of two coupled integral equations
+    sol = nlsolve(G!, μ0s, iterations = iterations) 
+    x_sol, y_sol = sol.zero
+    return x_sol, y_sol 
+end
+
+
+#rh_filling(p, ε, T = T, ϵ = 1e-7, evals = evals)
+
+
+# function G!(F, XY)
+#     x, y = XY
+#     F[1] = x - quadgk(f, 0, y)[1]
+#     F[2] = y - C - quadgk(f, 0, x)[1]
+# end
+
+# sol = nlsolve(G!, [x0, y0])
+# x_sol, y_sol = sol.zero

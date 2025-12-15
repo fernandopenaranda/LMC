@@ -75,7 +75,10 @@ function xx_drude_presets(N, p::Params_rhombohedral;
 end
 
 """ density of states call to Optics_in_the_length_gauge. Arguments in meV """
-c_dos(p::Planar_σijk_presets, μlist; η = 0.005, evals = 100) = 
+c_dos(p::Planar_σijk_presets, μ::Number; η = 0.005, evals = 100) = 
+    c_dos(p::Planar_σijk_presets, [μ]; η = η, evals = evals)
+
+c_dos(p::Planar_σijk_presets, μlist::Array; η = 0.005, evals = 10000) = 
     Optics_in_the_length_gauge.dos(p.a0, p.h, p.computation.xbounds, p.computation.ybounds, μlist ./ 1e3, η = η/1e3, evals = evals)
 
 """ quantum anomalous Hall response presets builder """

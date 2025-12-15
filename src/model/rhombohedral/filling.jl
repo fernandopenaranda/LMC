@@ -17,11 +17,21 @@ where A_small is the area considered over the integration
 """
 function rh_filling(N, p::Params_rhombohedral, μ; T = 0, ϵ = 1e-7, evals = 100)
     h(q) = abc_Nlayer(N, q, Params_rhombohedral(p, μ =0)) #unit_convention_two_packages_E
-    cnst = p.γ1/(p.γ0 *√3/2)
+    cnst = p.γ1/(p.γ0 * √3/2)
     Δx = [-cnst-ϵ, cnst]   # this is a ratio of energies, convention independent
     Δy = [-cnst-ϵ, cnst] # the areas are unitless
     A_BZ = 8π^2/√3
     A_small = ((Δx[2]-Δx[1])*(Δy[2]-Δy[1]))
-    return filling(h, μ, Δx, T, evals = evals) * A_small/A_BZ +
-        (A_BZ-A_small)/A_BZ
+    return filling(h, μ, Δx, T, evals = evals) * A_small/A_BZ + (A_BZ-A_small)/A_BZ - 1
+    # note the - 1 which is the convention that at the Fermi level the occupation is 0
+    # since it gives rise to a homogeneous Hartree potential that constitutes a rigid shift
+    # for all flavours
+end
+
+
+function rh_filling(p::Planar_σijk_presets, μ; T = 0, ϵ = 1e-7, evals = 100)
+    A_BZ = 8π^2/√3
+    A_small = ((p.xbounds[2]-p.xbounds[1])*(p.ybounds[2]-p.ybounds[1]))
+    filling(p.h, μ, p.xbounds, p.ybounds, p.T, 
+        evals = p.computation.evals) * A_small/A_BZ + (A_BZ-A_small)/A_BZ - 1
 end
