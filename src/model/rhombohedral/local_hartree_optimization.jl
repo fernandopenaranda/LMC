@@ -4,24 +4,102 @@
 using Optim
 
 """
+logical function that tells us if the system is symmetric, half metal (half insulator), or
+quarter metal (quarter insulator)
+0 symmetric
+1 half_metal
+2 quarter
+
+"""
+function character(nαs; ϵ = 1e-4)
+    mat = reshape_densities(nαs)
+    logic_mat = 7 .* ones(size(mat[1],1), size(mat[1],2))
+        for i in 1:size(mat[1],1)
+            for j in 1:size(mat[1],2)
+                # logic_mat[i,j] = is_symmetric([mat[k][i,j] for k in 1:4])
+                n = [mat[k][i,j] for k in 1:4]
+                ch = is_quarter(n, ϵ = 1e-4)
+                if ch == 1 # half metal
+                    vp_halfmetal = ifelse(abs(n[1]+n[3]-n[2]-n[4]) > ϵ, -1, 1) # this means that 
+                    ch *= vp_halfmetal
+                else nothing end
+                logic_mat[i,j] = ch
+            end
+        end
+    return logic_mat
+
+end
+
+is_symmetric(ns; ϵ = 1e-4) = ifelse(sum([(n-mean(ns))^2 for n in ns]) < ϵ, 0, 1)
+is_quarter(ns; ϵ = 1e-4) = is_symmetric(ns; ϵ = ϵ) * ifelse( abs(ns[1]+ns[3]-ns[2]-ns[4]) < ϵ || abs(ns[1]+ns[4] - ns[2]-ns[3])< ϵ, 1, 2)
+
+
+function reshape_densities(nαs)
+    dim1 = length(nαs)
+    dim2 = length(nαs[1])
+    mats = [zeros(Float64, dim1, dim2) for i in 1:4]
+    for k in 1:4
+        for i in 1:dim1
+            for j in 1:dim2
+                mats[k][i,j] = nαs[i][j][k]
+            end 
+        end
+    end
+    return mats
+end
+
+"""
+generate interpolated dos and ns as a function of Ez.
+    T = 0
+"""
+function interpolated_dos_ns_Ez(N, p::Params_rhombohedral, Ezs::Union{Array, AbstractRange}; kws...)
+    dos_mat = []
+    n_mat = []
+    e_mat = []
+    for (i,Ez) in enumerate(Ezs)
+        e, d, n =  interpolated_dos_ns_Ez(N, p, Ez; kws...)
+        push!(dos_mat, d)
+        push!(n_mat, n)
+        push!(e_mat, e)
+    end
+    return e_mat, dos_mat, n_mat
+end
+
+function interpolated_dos_ns_Ez(N, p::Params_rhombohedral, Ez::Number;
+     estimated_bound_width = 10, evals = 10, η = 0.05)
+    np = xxx_lmc_presets(N, 0, 1, Params_rhombohedral(p, Delta_Ez = Ez), evals = evals)
+    ϵ_range, int_dos = interpolated_dos(np, 4estimated_bound_width, evals = evals, η = η)
+    n = interpolated_n(int_dos, ϵ_range)
+    return ϵ_range, int_dos, n
+end
+
+"""
 by introducing such SU2 Hunds interaction we have broken the arbitrarity between indices
 of the four flavours. Now 1 → K↑, 2 → K'↑, 3 → K↓, 4 → K'↓.
 This function computes the order parameters associated to the Hartree phase.
     σ are the spin τ valley d.o.f
 """
-function rh_order_parameter(nαs)
-    σ0τ0 = Δw(nαs, [1,1,1,1])/norm(nαs)
-    σzτ0 = Δw(nαs, [1,1,-1,-1])/norm(nαs)
-    σ0τz = Δw(nαs, [1,-1,1,-1])/norm(nαs)
-    σzτz = Δw(nαs, [1,-1,-1,1])/norm(nαs)
-    return σ0τ0, σzτ0, σ0τz, σzτz
+function polarization(nαs::Vector{Matrix{Float64}})
+    dim1 = size(nαs[1],1)
+    dim2 = size(nαs[1],2)
+    σ0τ0_mat = zeros(Float64, dim1, dim2)
+    σzτ0_mat = zeros(Float64, dim1, dim2)
+    σ0τz_mat = zeros(Float64, dim1, dim2)
+    σzτz_mat = zeros(Float64, dim1, dim2)
+    for i in 1:dim1
+        for j in 1:dim2
+            n = [nαs[k][i, j] for k in 1:4]
+            s1, s2, s3 = polarization(n)
+            σ0τ0_mat[i,j] = ifelse(sum(n) <1e-7, 1, sum(n)/(4mean(n)))
+            σ0τz_mat[i,j] = s1
+            σzτ0_mat[i,j] = s2
+            σzτz_mat[i,j] = s3
+        end
+    end
+    return σ0τ0_mat, σ0τz_mat, σzτ0_mat, σzτz_mat
 end
-
-function Δw(n, w)
-    return dot(w, n)
-end
-
-
+    
+polarization(n::Array{Float64}) =  abs(n' * [1,-1,1,-1]), abs(n' * [1,1,-1,-1]), abs(n' * [1,-1,-1,1])
 
 """ 
 `Emin_μαs(p::Planar_σijk_presets, μ0s::Vector{Int64}, μs::Union{Array,AbstractRange};
@@ -34,24 +112,68 @@ before calling to the optimizer (highly efficient).
 The system in degenerate in spin but not in valley, however the total energy and filling is
 degenerate in valley too.
 The type of potential SU4 or SU2 (hunds coupling) is selected by int_model
+I introduce a filling and one Ez
 """
 
-function Emin_nαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, μarray; kws...)
+function Emin_nαs(int_dos_mat, n_mat, νarray, Ezarray; kws...)
+    nαs = []
+    μαs = []
+    for (i, Ez) in enumerate(Ezarray)
+        μs, ns =  Emin_nαs(int_dos_mat[i], n_mat[i], νarray; kws...)
+        push!(nαs, ns)
+        push!(μαs, μs)
+    end
+    return μαs, nαs # upper level is Ez, lower level is μ
+end
+
+function Emin_nαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, νarray; kws...)
+    nαs = []
+    μαs = []
+    for ν in νarray
+        μ = 1e3 .* find_zero(μ -> int_n_mat[1](ν) - μ, 0.0)
+        # println("μ: ", μ)
+        μs = Emin_μαs(int_dos, n, μ; kws...)
+        push!(nαs, n.(μs)) 
+        push!(μαs, μs)
+    #sweep in the chemical potential for a constant value
+    end
+    return μαs, nαs
+end
+
+
+function Emin_μαs(int_dos_mat, n_mat, μarray, Ezarray; kws...)
+    nαs = []
+    for (i, Ez) in enumerate(Ezarray)
+        push!(nαs, Emin_nαs(int_dos_mat[i], n_mat[i], μarray; kws...)) 
+    end
+    return nαs # upper level is Ez, lower level is μ
+end
+
+
+function Emin_μαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, μarray; kws...)
     nαs = []
     for μ in μarray
-        push!(nαs, n.(Emin_μαs(int_dos, n, μ; kws...))) #sweep in the chemical potential for a constant value
+        push!(nαs, n.(Emin_μαs(int_dos, n, μ; kws...))) 
+    #sweep in the chemical potential for a constant value
     end
     return nαs
 end
 
-function Emin_μαs(p::Planar_σijk_presets, μ::Number; 
+function Emin_μαs(p::Planar_σijk_presets, ν::Number; 
     evals = 1e2, η = 0.05, estimated_bound_width = 20, kws...) 
-    ϵ_range, int_dos = interpolated_dos(p, 2estimated_bound_width, evals = evals, η = η)
+    ϵ_range, int_dos = interpolated_dos(p, 4estimated_bound_width, evals = evals, η = η)
     n = interpolated_n(int_dos, ϵ_range)
-    Emin_μαs(int_dos, n, μ; evals = evals, η = η, 
+    Emin_μαs(int_dos, n, ν; evals = evals, η = η, 
         estimated_bound_width = estimated_bound_width, kws...)
 end
 
+# function Emin_μαs(p::Planar_σijk_presets, μ::Number; 
+#     evals = 1e2, η = 0.05, estimated_bound_width = 20, kws...) 
+#     ϵ_range, int_dos = interpolated_dos(p, 4estimated_bound_width, evals = evals, η = η)
+#     n = interpolated_n(int_dos, ϵ_range)
+#     Emin_μαs(int_dos, n, μ; evals = evals, η = η, 
+#         estimated_bound_width = estimated_bound_width, kws...)
+# end
 
 function Emin_μαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, μ::Number; 
         random_guesses = 2, U = 0, J = 0, λ = 0, evals = 1e2, η = 0.05, 
@@ -67,7 +189,7 @@ function Emin_μαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, μ::Nu
         μαs = opt_μs(μ0s, n; μ = μ, U = U, J = J, λ = λ, 
         evals = eval, η = η, estimated_bound_width = estimated_bound_width, 
             iterations = iterations, int_model = int_model)
-        E = total_energy(μαs, int_dos, n, U, J, int_model) # compute the total energy
+        E = total_energy(μ, μαs, int_dos, n, U, J, int_model) # compute the total energy
         push!(μα_mat, μαs)
         append!(Es, E)
         count +=1 
@@ -90,7 +212,7 @@ function Emin_μαs(p::Planar_σijk_presets, μ0s::Array, μ::Number;
     μαs = opt_μs(μ0s, n; μ = μ, U = U, J = J, λ = λ, 
         evals = eval, η = η, estimated_bound_width = estimated_bound_width, 
         iterations = iterations, int_model = int_model)
-    E = total_energy(μαs, int_dos, n, U, J, int_model) # compute the total energy
+    E = total_energy(μ, μαs, int_dos, n, U, J, int_model) # compute the total energy
     println("E: ", E)
     return μαs
 end
@@ -132,8 +254,8 @@ opt_μs(μ0s, es_and_int_dos; kws...) =
 function opt_μs(μ0s::Vector{Float64}, n::ScaledInterpolation;
     μ = 0, U = 0, J = 0, λ = 0, evals = 1e2, η = 0.05, estimated_bound_width = 10, 
         iterations = 100, int_model = :SU4)
-    lower = -estimated_bound_width .* ones(4)
-    upper = estimated_bound_width .* ones(4)
+    lower = (-estimated_bound_width + μ) .* ones(4)
+    upper = (estimated_bound_width + μ) .* ones(4)
     n0 = n(μ) # number of electrons at μ, no interaction
     if int_model == :SU4
         objective = objective_su4
@@ -258,7 +380,7 @@ evaluated at the extrema found opt_μαs.
 The entropy part which does not enter in the extrema conditions is only relevant at finite T=0
 T≠0 methods not implemented at the moment.
 """
-function total_energy(μαs, dos, n, U, J, int_model)
+function total_energy(μ, μαs, dos, n, U, J, int_model)
     s = 0.0
     for (i,μα) in enumerate(μαs)  
        s += E(dos, μα) - μ * n(μα)
@@ -293,5 +415,5 @@ function v_su4(U, J, n, μαs)
 end
 
 function v_su2(U, J, n, μαs)
-    return v_su4(U, J, n, μαs) + J * (n(μαs[1])-n(μαs[3])) * (n(μαs[2])-n(μαs[4]))
+    return v_su4(U, J, n, μαs) + J * abs(n(μαs[1])-n(μαs[3])) * abs(n(μαs[2])-n(μαs[4]))
 end
