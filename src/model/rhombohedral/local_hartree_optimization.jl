@@ -111,6 +111,7 @@ I introduce a filling and one Ez
 """
 
 function Emin_nαs(int_dos_mat, n_mat, νarray;steps = 5, kws...)
+    println("hey")
     nαs = []
     μαs = []
     for i in 1:steps:length(n_mat)
@@ -124,8 +125,11 @@ end
 function Emin_nαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, νarray; kws...)
     nαs = []
     μαs = []
+    println("hey")
     for ν in νarray
-        μ = 1e3 .* find_zero(μ -> int_n_mat[1](ν/4) - μ, 0.0)
+        int_n_mat
+        μ = 1e3 .* find_zero(μ -> int_n_mat[1](ν/4) - μ , 0.0)
+        #μ = 1e3 .* find_zero(μ -> n(μ) - ν/4, 0.0)
         # println("μ: ", μ)
         μs = Emin_μαs(int_dos, n, μ; kws...)
         push!(nαs, n.(μs)) 
