@@ -29,7 +29,7 @@ function rh_filling(N, p::Params_rhombohedral, μ; T = 0, ϵ = 1e-7, evals = 100
 end
 
 
-function rh_filling(p::Planar_σijk_presets, μ; T = 0, ϵ = 1e-7, evals = 100)
+function rh_filling(p::Planar_σijk_presets_orbital, μ; T = 0, ϵ = 1e-7, evals = 100)
     A_BZ = 8π^2/√3
     A_small = ((p.xbounds[2]-p.xbounds[1])*(p.ybounds[2]-p.ybounds[1]))
     filling(p.h, μ, p.xbounds, p.ybounds, p.T, 

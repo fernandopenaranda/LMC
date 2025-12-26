@@ -1,6 +1,3 @@
-using Optics_in_the_length_gauge
-
-const a0 = 2.46 # lattice constant in Å
 """
 semiclassical expression for the linear in B magnetoconductivity in the presence of constant 
 electric and magnetic field and electric fields in the plane.
@@ -10,7 +7,7 @@ If there is a dependency on rz which depends on sin(k) will give rise to a vij �
 
 Units: [e^2/h * 1/T]
 τ is the scattering time in seconds
-returns the presets struct that set the `Optics_in_the_length_gauge.linear_magneto_conductivity` calculation
+returns the presets struct that set the `Optics_in_the_length_gauge.linear_magneto_conductivity_orbital` calculation
 The model is written in meV, fs, Angstroms, and K.
 The module Optics_in_the_length_gauge is written in eV, s, K, so there is a unit 
     convention fixer
@@ -36,8 +33,8 @@ function xxx_lmc_presets(N, p::Params_rhombohedral; T = 10, τ = 200, evals = 10
     ybounds = [-cnst-ϵ, cnst]   
     # computation presets
     cpt = Transport_computation_presets(xbounds, ybounds, evals)
-    # planar preset object (argument of `Optics_in_the_length_gauge.linear_magneto_conductivity`)
-    planar_presets = Planar_σijk_presets(a0, :x,:x,:x, h, dh, dhxx, rz, τ*unit_convention_two_packages_t,
+    # planar preset object (argument of `Optics_in_the_length_gauge.linear_magneto_conductivity_orbital`)
+    planar_presets = Planar_σijk_presets_orbital(a0, :x,:x,:x, h, dh, dhxx, rz, τ*unit_convention_two_packages_t,
         T, cpt, berry_contribution, omm_contribution, fermi_surface, with_shift)
     return planar_presets
 end
@@ -69,18 +66,36 @@ function xx_drude_presets(N, p::Params_rhombohedral;
     # computation presets
     cpt = Transport_computation_presets(xbounds, ybounds, evals)
     # planar preset object (argument of 
-    # `Optics_in_the_length_gauge.linear_magneto_conductivity`)
+    # `Optics_in_the_length_gauge.linear_magneto_conductivity_orbital`)
     return Drude_presets(a0, :x,:x, h, dhx, T, 
         τ*unit_convention_two_packages_t, cpt)
 end
 
+#_______________________________________________________________________________________
+# More wrappers
+#_______________________________________________________________________________________
+lmc_presets(N, μ,ξ, p::Params_rhombohedral; kws...) = 
+     xxx_lmc_presets(N, μ, ξ, p; kws...)
+lmcnoshift_presets(μ,ξ, evals) = 
+    xxx_lmc_presets(N, μ, ξ, p; evals = evals, T = T, 
+    berry_contribution = true, omm_contribution = true, fermi_surface = false, 
+    with_shift = false)
+lmcshift_presets(μ,ξ) = 
+    xxx_lmc_presets(N, μ, ξ, p; evals = evals, T = T, fermi_surface = false, 
+    with_shift = true)
+
+#_______________________________________________________________________________________
+# DOS
+#_______________________________________________________________________________________
 """ density of states call to Optics_in_the_length_gauge. Arguments in meV """
-c_dos(p::Planar_σijk_presets, μ::Number; η = 0.005, evals = 100) = 
-    c_dos(p::Planar_σijk_presets, [μ]; η = η, evals = evals)
+c_dos(p::Planar_σijk_presets_orbital, μ::Number; η = 0.005, evals = 100) = 
+    c_dos(p::Planar_σijk_presets_orbital, [μ]; η = η, evals = evals)
 
-c_dos(p::Planar_σijk_presets, μlist::Array; η = 0.005, evals = 10000) = 
+c_dos(p::Planar_σijk_presets_orbital, μlist::Array; η = 0.005, evals = 10000) = 
     Optics_in_the_length_gauge.dos(p.a0, p.h, p.computation.xbounds, p.computation.ybounds, μlist ./ 1e3, η = η/1e3, evals = evals)
-
+#_______________________________________________________________________________________
+# QAH
+#_______________________________________________________________________________________
 """ quantum anomalous Hall response presets builder """
 σxyahe_presets(N, μ, ξ, p::Params_rhombohedral; kws...) = qah_presets(N, :x, :y, μ, ξ, p; kws...)
 qah_presets(N, dirJ, dirE, μ, ξ, p::Params_rhombohedral; kws...) = qah_presets(N, dirJ, dirE, Params_rhombohedral(p, ξ = ξ, μ = μ); kws...)
@@ -104,15 +119,15 @@ end
 # k - resolved calculations
 #_________________________________________________________________________________________
 """kresolved calcuations"""
-kresolvedlmc(pR::Params_rhombohedral, p::Planar_σijk_presets; Ω_contr = true, omm_contr = true, fermi_surface = false, with_shift = true, points = 10) =
+kresolvedlmc(pR::Params_rhombohedral, p::Planar_σijk_presets_orbital; Ω_contr = true, omm_contr = true, fermi_surface = false, with_shift = true, points = 10) =
     klmc(pR, p.dirJ,p.dirE,p.dirB, p.h, p.nabla_h, p.nabla_nabla_h, p.rz, p.τ, p.T, 
         Ω_contr = Ω_contr, omm_contr = omm_contr, fermi_surface = fermi_surface, with_shift = with_shift, points = points)
 """kresolved inplane berry curvature"""
-k_Omegain(p::Planar_σijk_presets, q) = Optics_in_the_length_gauge.k_Ωi_fs(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
+k_Omegain(p::Planar_σijk_presets_orbital, q) = Optics_in_the_length_gauge.k_Ωi_fs(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
 """kresolved outofplane berry curvature"""
-k_Omegaz(p::Planar_σijk_presets, q) = Optics_in_the_length_gauge.k_Ωxy_fn(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
+k_Omegaz(p::Planar_σijk_presets_orbital, q) = Optics_in_the_length_gauge.k_Ωxy_fn(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
 """kresolved omm"""
-k_d_OMM(p::Planar_σijk_presets, q) = Optics_in_the_length_gauge.k_d_OMM_fs(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
+k_d_OMM(p::Planar_σijk_presets_orbital, q) = Optics_in_the_length_gauge.k_d_OMM_fs(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
 
 
 #____________________________________________________________________________________________

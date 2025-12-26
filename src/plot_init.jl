@@ -1,0 +1,16 @@
+abcplotbandsk(kws...) = not_defined(kws...)
+abcNplotbandsk(kws...) = not_defined(kws...)
+abcplotbands!(kws...) = not_defined(kws...)
+half_metal_dos(kws...) = not_defined(kws...)
+quarter_metal_dos(kws...) = not_defined(kws...)
+half_metal_plotbands(kws...) = not_defined(kws...)
+quarter_metal_plotbands(kws...) = not_defined(kws...)
+spinfull_plotbands(kws...) = not_defined(kws...)
+spinfull_plotbands!(kws...) = not_defined(kws...)
+plotmap(kws...) = not_defined(kws...)
+plotmap!(kws...) = not_defined(kws...)
+plot_dos!(kws...) = not_defined(kws...)
+
+function not_defined(args...)
+    error("Load CairoMakie to enable plotting")
+end

@@ -1,6 +1,4 @@
-using Cubature
-using LinearAlgebra
-using Cubature, QuadGK
+
 
 const α1 = 0.7882# here \theta is independent of M so we take one value equal to 1.05
 const α2 = 0.6155 # these are approximate values.

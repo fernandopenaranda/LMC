@@ -35,14 +35,6 @@ function quarter_metal_plotbands(p::Params_rhombohedral, N, Delta_Ez, Valley_asy
     return spinfull_plotbands(N, ps, points = points)
 end
 
-""" computes and plot bands givern a vector of Params_rhombohedral presets """
-function spinfull_plotbands(N, ps; points = 100)
-    fig = Figure()
-    ax = Axis(fig[1:2, 0]; xlabel = "kx", ylabel = "E [meV]")
-    spinfull_plotbands!(ax, N, ps, points = points)
-    return fig
-end
-
 function spinfull_plotbands!(ax, N, ps; points = 100)
     abcNplotbandsk(ax, N, points, ps[1]; ylims = [-1, 1], color = :black)#, style = :solid)
     abcNplotbandsk(ax, N, points, ps[2]; ylims = [-1, 1], color = :black)#, style = :dash)
@@ -53,25 +45,6 @@ end
 #_________________________________________________________________________________________
 # DOS methods for quarter and half metals
 #_________________________________________________________________________________________
-
-function half_metal_dos(N, p, Delta_Ez, Valley_asym, μlist; evals = 100, η = 0.05)
-    ps = half_metal_presets(p, Delta_Ez, Valley_asym)
-    ω, js = spinfull_dos(N, ps, η, evals)
-    fig = Figure()
-    ax = Axis(fig[1,1], xlabel = "μ [meV]", ylabel = "DOS (a.u.)")
-    plot_dos!(ax, ω, js)
-    fig
-end
-
-function quarter_metal_dos(N, p, Delta_Ez, Valley_asym, μlist; evals = 100, η = 0.05)
-    ps = quarter_metal_presets(p, Delta_Ez, Valley_asym)
-    ω, js = spinfull_dos(N, ps, η, evals)
-    fig = Figure()
-    ax = Axis(fig[1,1], xlabel = "μ [meV]", ylabel = "DOS (a.u.)")
-    plot_dos!(ax, ω, js)
-    fig
-end
-
 function spinfull_dos(N, ps, η, evals)
     nps = [xxx_lmc_presets(N, ps[i]) for i in 1:length(ps)]
     ω, j1 = c_dos(nps[1], μlist, η = η, evals = evals)
@@ -80,23 +53,9 @@ function spinfull_dos(N, ps, η, evals)
     ω, j4 = c_dos(nps[4], μlist, η = η, evals = evals)
     return ω, [j1,j2,j3,j4]
 end
-
-function plot_dos!(ax, ω, js)
-    colors = [:black, :black, :gray, :gray]
-    styles = [:solid, :dash, :solid, :dash]
-    labels = ["+↑", "+↓", "-↑", "-↓"]
-    for (i,j) in enumerate(js)
-        lines!(ax, ω, j, color = colors[i], linestyle = styles[i], label = labels[i])
-    end
-    axislegend(ax)
-end
-
-
 #_________________________________________________________________________________________
 # Root finder. Worse than the interpolation strategy
 #_________________________________________________________________________________________ 
-using NLsolve, QuadGK, Interpolations
-
 """computes the dependency of the chemical potential for each spin species assuming a 
 SU(4) and SU(2) local Hartree interactions.
 The problem is to minimize the grand potential with respect to n_α. To do so we have to
@@ -104,7 +63,7 @@ solve a system of coupled non-linear (integral) equations.
 The most practical approach is to interpolate the density of states for some given presets
 Valid only at T=0, there is another approach.
 """
-function μ_α(p::Planar_σijk_presets; μ = 0, U =0, J = 0, evals = 1e2, η = 0.05, iterations::Int64 = 10)
+function μ_α(p::Planar_σijk_presets_orbital; μ = 0, U =0, J = 0, evals = 1e2, η = 0.05, iterations::Int64 = 10)
     println("Initializing...")
     _, func = interpolated_dos(p; evals = evals, η = η)
     I0 = Integ(func, μ)
@@ -125,7 +84,7 @@ end
 
 
 
-function μ_αT(p::Planar_σijk_presets;μ = 0, U =0, evals = 1e2, η = 0.05, iterations = 10)
+function μ_αT(p::Planar_σijk_presets_orbital;μ = 0, U =0, evals = 1e2, η = 0.05, iterations = 10)
     A = (√3/2)* (a0*1e-10)^2   # edit
     n(ε) = rh_filling(p, ε, T = T, ϵ = 1e-7, evals = evals)
     function G!(F, μ0s)

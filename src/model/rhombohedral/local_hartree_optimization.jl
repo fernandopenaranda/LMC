@@ -1,15 +1,12 @@
 #_________________________________________________________________________________________
 # Local Hartree interaction
 #_________________________________________________________________________________________
-using Optim
-
 """
 logical function that tells us if the system is symmetric, half metal (half insulator), or
 quarter metal (quarter insulator)
 0 symmetric
 1 half_metal
 2 quarter
-
 """
 function character(nαs; ϵ = 1e-4)
     mat = reshape_densities(nαs)
@@ -29,10 +26,8 @@ function character(nαs; ϵ = 1e-4)
     return logic_mat
 
 end
-
 is_symmetric(ns; ϵ = 1e-4) = ifelse(sum([(n-mean(ns))^2 for n in ns]) < ϵ, 0, 1)
 is_quarter(ns; ϵ = 1e-4) = is_symmetric(ns; ϵ = ϵ) * ifelse( abs(ns[1]+ns[3]-ns[2]-ns[4]) < ϵ || abs(ns[1]+ns[4] - ns[2]-ns[3])< ϵ, 1, 2)
-
 
 function reshape_densities(nαs)
     dim1 = length(nαs)
@@ -115,10 +110,10 @@ The type of potential SU4 or SU2 (hunds coupling) is selected by int_model
 I introduce a filling and one Ez
 """
 
-function Emin_nαs(int_dos_mat, n_mat, νarray, Ezarray; kws...)
+function Emin_nαs(int_dos_mat, n_mat, νarray;steps = 5, kws...)
     nαs = []
     μαs = []
-    for (i, Ez) in enumerate(Ezarray)
+    for i in 1:steps:length(n_mat)
         μs, ns =  Emin_nαs(int_dos_mat[i], n_mat[i], νarray; kws...)
         push!(nαs, ns)
         push!(μαs, μs)
@@ -130,7 +125,7 @@ function Emin_nαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, νarray
     nαs = []
     μαs = []
     for ν in νarray
-        μ = 1e3 .* find_zero(μ -> int_n_mat[1](ν) - μ, 0.0)
+        μ = 1e3 .* find_zero(μ -> int_n_mat[1](ν/4) - μ, 0.0)
         # println("μ: ", μ)
         μs = Emin_μαs(int_dos, n, μ; kws...)
         push!(nαs, n.(μs)) 
@@ -159,7 +154,7 @@ function Emin_μαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, μarra
     return nαs
 end
 
-function Emin_μαs(p::Planar_σijk_presets, ν::Number; 
+function Emin_μαs(p::Planar_σijk_presets_orbital, ν::Number; 
     evals = 1e2, η = 0.05, estimated_bound_width = 20, kws...) 
     ϵ_range, int_dos = interpolated_dos(p, 4estimated_bound_width, evals = evals, η = η)
     n = interpolated_n(int_dos, ϵ_range)
@@ -167,7 +162,7 @@ function Emin_μαs(p::Planar_σijk_presets, ν::Number;
         estimated_bound_width = estimated_bound_width, kws...)
 end
 
-# function Emin_μαs(p::Planar_σijk_presets, μ::Number; 
+# function Emin_μαs(p::Planar_σijk_presets_orbital, μ::Number; 
 #     evals = 1e2, η = 0.05, estimated_bound_width = 20, kws...) 
 #     ϵ_range, int_dos = interpolated_dos(p, 4estimated_bound_width, evals = evals, η = η)
 #     n = interpolated_n(int_dos, ϵ_range)
@@ -202,7 +197,7 @@ function Emin_μαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, μ::Nu
 end
 
 
-function Emin_μαs(p::Planar_σijk_presets, μ0s::Array, μ::Number;
+function Emin_μαs(p::Planar_σijk_presets_orbital, μ0s::Array, μ::Number;
         U = 0, J = 0, λ = 0, evals = 1e2, η = 0.05, 
         estimated_bound_width = 10, iterations = 100, int_model = :SU4) 
     U *= (√3/2)* (a0)^2 # over the BZ area
@@ -241,11 +236,11 @@ for the four flavours in this rigid band (local (q independent) Hartree perturba
 first create this function and interpolate it. We also interpolate the density of states 
 for convenience μ0s are the seeds
 
-Attention there is a field inside the Planar_σijk_presets.computation that is evals, we do
+Attention there is a field inside the Planar_σijk_presets_orbital.computation that is evals, we do
 not use it here but you should change the kws to be consistent in future calculations. Also
 allow for the Dos struct.
 """
-opt_μs(p::Planar_σijk_presets, μ0s::Vector{Int64}; evals = 10, η = 0.05, kws...) = 
+opt_μs(p::Planar_σijk_presets_orbital, μ0s::Vector{Int64}; evals = 10, η = 0.05, kws...) = 
     opt_μs(μ0s, interpolated_dos(p; evals = evals, η = η); kws...)
 
 opt_μs(μ0s, es_and_int_dos; kws...) = 
@@ -311,7 +306,6 @@ function objective_su2(n, μs, μ, U, J, λ)
     for (i,μi) in enumerate(μs)
         s += ( μi - μ +  
                U * sum([n(μi) for μi in μs[inds_not_alpha(i)]]) +
-
                J * hund_coupling(i, n, μs))^2  
     end
     obj = s + penalty_fixed_filling(n0, n, μs, λ = λ)
@@ -341,15 +335,15 @@ function penalty_fixed_filling(n0, n, μs; λ = 0)
 end
 
 """
-    `interpolated_dos(p::Planar_σijk_presets; μlist = 0.0:0.1:15.0, η = 0.05, evals = 100)`
+    `interpolated_dos(p::Planar_σijk_presets_orbital; μlist = 0.0:0.1:15.0, η = 0.05, evals = 100)`
 interpolated density of statse per unit of area for an arbitrary flavour. Returns a function 
 that can be evaluated within bounds of μlist. ! this code paths is at 0 temperature
 """
 
-interpolated_dos(p::Planar_σijk_presets, bounds::Number; kws...) =
+interpolated_dos(p::Planar_σijk_presets_orbital, bounds::Number; kws...) =
     interpolated_dos(p; μlist = -bounds:bounds/100:bounds, kws...) 
 
-function interpolated_dos(p::Planar_σijk_presets; 
+function interpolated_dos(p::Planar_σijk_presets_orbital; 
         μlist = -10.0:0.1:10.0, η = 0.05, evals = 100) 
     # println("Interpolating dos...")
     A = (1e-10)^2
@@ -414,6 +408,5 @@ function v_su4(U, J, n, μαs)
     return  U/2 *(s^2 - s2) # this is an identity
 end
 
-function v_su2(U, J, n, μαs)
-    return v_su4(U, J, n, μαs) + J * abs(n(μαs[1])-n(μαs[3])) * abs(n(μαs[2])-n(μαs[4]))
-end
+v_su2(U, J, n, μαs) = v_su4(U, J, n, μαs) + 
+    J * abs(n(μαs[1])-n(μαs[3])) * abs(n(μαs[2])-n(μαs[4]))

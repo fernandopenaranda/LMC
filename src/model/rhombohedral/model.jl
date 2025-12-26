@@ -8,21 +8,14 @@ k- adimensional momentum (module)
 The model is written in meV, fs, and K. 
 The module Optics_in_the_length_gauge is written in eV, s, K, so there is a unit convention fixer
 """
-
-using CairoMakie
-using LinearAlgebra
-using Parameters
-using PhysicalConstants
-using PhysicalConstants.CODATA2018
-using StaticArrays
-
 const s0 = SA[1 0; 0 1]
 const σ0 = SA[1 0; 0 1]
 const σx = SA[0 1; 1 0]
 const σy = SA[0 -1im; 1im 0]
 const σz = SA[1 0; 0 -1]
-const a0 = 2.46
+const a0 = 2.46 # lattice constant in Å
 const d = 3.35
+
 
 @with_kw struct Params_rhombohedral
     ξ::Int #+1 or -1
@@ -108,15 +101,26 @@ function dhyNlg(N, k::Number, θ, p)
     return [m11 m12; conj(m12) m22]
 end
 
+# lmc and qah are ok.
+# mN12y(n1,n2,n3, k, θ, p) = dkcommon(n1,n2,n3, k, θ, p) * (cos(θ)*(n1+n2) - sin(θ)*p.ξ*1im*(n1-n2))
+# mN12x(n1,n2,n3, k, θ, p) =  dkcommon(n1,n2,n3, k, θ, p) * (sin(θ)*(n1+n2) +cos(θ)*p.ξ*1im*(n1-n2))
+# dkcommon(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3, p) * k^(n1+n2-1) * cis(p.ξ * θ*(n1-n2))
 
-mN12y(n1,n2,n3, k, θ, p) =  cos(θ-ifelse(p.ξ==1, 0, π)) * dkXNLG(n1,n2,n3, k, θ, p) - 
-    sin(θ-ifelse(p.ξ==1, 0, π))/k * dθXNLG(n1,n2,n3, k, θ, p) #parece que los ejes est'an girados por eso x->y
-mN12x(n1,n2,n3, k, θ, p) =  sin(θ-ifelse(p.ξ==1, 0, π)) * dkXNLG(n1,n2,n3, k, θ, p) + 
-    cos(θ-ifelse(p.ξ==1, 0, π))/k * dθXNLG(n1,n2,n3, k, θ, p)
+# lmc and qah are ok. Wierd way to introduce the xi dependency but robust
+mN12y(n1,n2,n3, k, θ, p) =  dkcommon(n1,n2,n3, k, θ, p)  * (cos(θ-ifelse(p.ξ==1, 0, π)) *  (n1+n2) * cis(θ*(n1-n2)) - 
+    sin(θ-ifelse(p.ξ==1, 0, π)) * 1im *(n1-n2) * cis(θ*(n1-n2))) #parece que los ejes est'an girados por eso x->y
+mN12x(n1,n2,n3, k, θ, p) =  dkcommon(n1,n2,n3, k, θ, p) * p.ξ * (sin(θ-ifelse(p.ξ==1, 0, π)) * (n1+n2) * cis(θ*(n1-n2)) + 
+   cos(θ-ifelse(p.ξ==1, 0, π)) * 1im *(n1-n2) * cis(θ*(n1-n2)))
+dkcommon(n1,n2,n3, k, θ, p) = (prefactor(n1,n2,n3, p) * k^(n1+n2-1)) 
 
-dkXNLG(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3, p) * (n1+n2) * k^(n1+n2-1) * cis(θ*(n1-n2))
 
-dθXNLG(n1,n2,n3, k, θ, p) = 1im* prefactor(n1,n2,n3, p) * k^(n1+n2) * (n1-n2) * cis(θ*(n1-n2))
+# both ok rest is ook [1]
+# mN12y(n1,n2,n3, k, θ, p) =  (cos(θ-ifelse(p.ξ==1, 0, π)) * dkXNLG(n1,n2,n3, k, θ, p) - 
+#     sin(θ-ifelse(p.ξ==1, 0, π)) * dθXNLG(n1,n2,n3, k, θ, p)) #parece que los ejes est'an girados por eso x->y
+# mN12x(n1,n2,n3, k, θ, p) =  p.ξ*(sin(θ-ifelse(p.ξ==1, 0, π)) * dkXNLG(n1,n2,n3, k, θ, p) + 
+#     cos(θ-ifelse(p.ξ==1, 0, π)) * dθXNLG(n1,n2,n3, k, θ, p))
+# dkXNLG(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3, p) * k^(n1+n2-1)* (n1+n2) * cis(θ*(n1-n2))
+# dθXNLG(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3, p) * k^(n1+n2-1) * 1im *(n1-n2) * cis(θ*(n1-n2))
 
 prefactor(n1,n2,n3, p) = fact_triad(n1,n2,n3)*(1/(-p.γ1)^(n1+n2+n3-1))*(p.γ2/2)^n3 * (√3/2*p.γ0)^n1 * (√3/2*p.γ3)^n2 
 
@@ -139,20 +143,26 @@ function dhxxNlg(N, k::Number, θ, p)
     return [m11 m12; conj(m12) m22]
 end
 
-mN12xx(n1,n2,n3, k, θ, p) =  prefactor(n1,n2,n3,p) * k^(n1+n2-2) * cis(θ*(n1-n2)) * (
-    1im*(n1 - n2)^2*cos(θ-ifelse(p.ξ==1, 0, π))^2 + (n1 - n2) * (-3 + n1 + n2) * cos(θ-ifelse(p.ξ==1, 0, π))*sin(θ-ifelse(p.ξ==1, 0, π)) +
-    1/2 * (n1+n2) *(n1+n2-1 - (-3 + n1 + n2) *cos(2*(θ-ifelse(p.ξ==1, 0, π))) +  1im*(n1-n2) * sin(2*(θ-ifelse(p.ξ==1, 0, π)))))
+# new: works too
+mN12xx(n1,n2,n3, k, θ, p) =  sin(θ-ifelse(p.ξ==1, 0, π)) * mN12xxk(n1,n2,n3, k, θ, p) + cos(θ-ifelse(p.ξ==1, 0, π))/k * mN12xxθ(n1,n2,n3, k, θ, p)
+mN12xxk(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3,p) * cis(θ * (n1-n2)) *
+     (sin(θ-ifelse(p.ξ==1, 0, π)) * (n1+n2) + cos(θ-ifelse(p.ξ==1, 0, π)) * 1im * (n1-n2)) * (n1+n2-1) * k^(n1+n2-2)
+mN12xxθ(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3,p) * k^(n1+n2-1) * cis(θ * (n1-n2)) * (
+     (n1+n2) * (1im *(n1-n2)*sin(θ-ifelse(p.ξ==1, 0, π)) + cos(θ-ifelse(p.ξ==1, 0, π))) + 1im *(n1-n2)* (1im *(n1-n2)*cos(θ-ifelse(p.ξ==1, 0, π)) -sin(θ-ifelse(p.ξ==1, 0, π)))
+)
+
+
+# old: works ok [1]
+# mN12xx(n1,n2,n3, k, θ, p) =  prefactor(n1,n2,n3,p) * k^(n1+n2-2) * cis(θ*(n1-n2)) * (
+#     1im * (n1 - n2)^2*cos(θ-ifelse(p.ξ==1, 0, π))^2 + (n1 - n2) * (-3 + n1 + n2) * cos(θ-ifelse(p.ξ==1, 0, π))*sin(θ-ifelse(p.ξ==1, 0, π)) +
+#     1/2 * (n1+n2) *(n1+n2-1 - (-3 + n1 + n2) *cos(2*(θ-ifelse(p.ξ==1, 0, π))) +  1im*(n1-n2) * sin(2*(θ-ifelse(p.ξ==1, 0, π)))))
+
 
 rzNlg(N, ψs) = d * (N-1) * ψs' * σz * ψs # in Angstroms
-
-
 #############
 # Pentalayer
 #############
 abc_pentalayer(k::Array, p = params_rhombohedral()) = abc_Nlayer(5, norm(k), atan(k[2], k[1]), p)
-
-
-
 
 # abc_pentalayer(k::Array, p = params_rhombohedral()) = abc_pentalayer(norm(k), atan(k[2], k[1]), p)
 
@@ -217,3 +227,17 @@ abc_pentalayer(k::Array, p = params_rhombohedral()) = abc_Nlayer(5, norm(k), ata
 # rz5lg(ψs) = rzNlg(5, ψs)
 
  
+# TEST sigma yyy is 0. Success
+#test to compute yyy ,mN12xx is really mN12yy i have changed x by y in teh velocities too # success :) sigma yyy is 0
+# mN12x(n1,n2,n3, k, θ, p) =  dkcommon(n1,n2,n3, k, θ, p)  * (cos(θ-ifelse(p.ξ==1, 0, π)) *  (n1+n2) * cis(θ*(n1-n2)) - 
+#     sin(θ-ifelse(p.ξ==1, 0, π)) * 1im *(n1-n2) * cis(θ*(n1-n2))) #parece que los ejes est'an girados por eso x->y
+# mN12y(n1,n2,n3, k, θ, p) =  dkcommon(n1,n2,n3, k, θ, p) * p.ξ * (sin(θ-ifelse(p.ξ==1, 0, π)) * (n1+n2) * cis(θ*(n1-n2)) + 
+#    cos(θ-ifelse(p.ξ==1, 0, π)) * 1im *(n1-n2) * cis(θ*(n1-n2)))
+# dkcommon(n1,n2,n3, k, θ, p) = (prefactor(n1,n2,n3, p) * k^(n1+n2-1)) 
+# mN12xx(n1,n2,n3, k, θ, p) =  cos(θ-ifelse(p.ξ==1, 0, π)) * mN12yyk(n1,n2,n3, k, θ, p) - sin(θ-ifelse(p.ξ==1, 0, π))/k * mN12yyθ(n1,n2,n3, k, θ, p)
+# mN12yyk(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3,p) * cis(θ * (n1-n2)) *
+#      (cos(θ-ifelse(p.ξ==1, 0, π)) * (n1+n2) - sin(θ-ifelse(p.ξ==1, 0, π)) * 1im * (n1-n2)) * (n1+n2-1) * k^(n1+n2-2)
+# mN12yyθ(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3,p) * k^(n1+n2-1) * cis(θ * (n1-n2)) * (
+#      (n1+n2) * (1im *(n1-n2)*cos(θ-ifelse(p.ξ==1, 0, π)) - sin(θ-ifelse(p.ξ==1, 0, π))) + 1im *(n1-n2)* (1im *(n1-n2)*sin(θ-ifelse(p.ξ==1, 0, π)) +cos(θ-ifelse(p.ξ==1, 0, π)))
+# )
+#test
