@@ -1,4 +1,6 @@
 name = "LMC"
+uuid = "98a423fd-d5bf-40f1-900f-44db518a55ff"
+version = "0.1.0"
 
 [deps]
 Arpack = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
