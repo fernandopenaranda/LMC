@@ -1,11 +1,11 @@
 job_id = parse(Int, ARGS[1])
 jobs_num = parse(Int, ARGS[2])
 PID = ARGS[3]
-Ezmin = ARGS[4]
-Ezmax = ARGS[5]
-evals = ARGS[6]
-N = ARGS[7]
-η = ARGS[8]
+Ezmin = parse(Float64, ARGS[4])
+Ezmax = parse(Float64, ARGS[5])
+evals = parse(Int, ARGS[6])
+N = parse(Int, ARGS[7])
+η = parse(Float64, ARGS[8])
 
 print("Starting...")
 

@@ -37,3 +37,10 @@ function save_to_csv(ip::Interpolated_params, filename::String)
     df = DataFrame([to_dict(ip)])
     CSV.write(filename, df)
 end
+
+@with_kw struct Drude_params
+    N::Int # Number of layers
+    p::Params_rhombohedral
+    Ezlist::Array # Displacement fields
+    cpt::Computation_params
+end
