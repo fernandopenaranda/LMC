@@ -43,7 +43,7 @@ module LMC
     include(rhomb_folder * "spontaneous_sym_breakingmodels.jl")
     include(rhomb_folder * "local_hartree_optimization.jl")
     include(common_folder * "separate_contributions.jl")
-    include(proj_folder * "cluster/cluster_tools.jl")
+    include(proj_folder * "/cluster/cluster_tools.jl")
 
     export Params_rhombohedral, params_rhombohedral, xxx_lmc_presets, 
         lmc_presets, lmcshift_presets, lmcnoshift_presets, 
