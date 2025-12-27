@@ -19,6 +19,7 @@ p = Params_rhombohedral(1, 0, 3160, 390, -20, 315, 44, 0, 0)
 intp = Interpolated_params(N, p, [Ez], cpt)
 
 data_folder = pwd() * "/Data/Interpolations/" * string(PID) * "/" * string(job_id)
+mkdir(data_folder)
 save_to_csv(intp, data_folder * "/presets.csv")
 
 Ezs, ϵ_mat, int_dos_mat, int_n_mat = interpolated_dos_ns_Ez(intp);
