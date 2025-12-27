@@ -61,5 +61,5 @@ module LMC
     export Emin_nαs, Emin_μαs, opt_μs, interpolated_dos, interpolated_n
     export klmc, kresolved_Ωz, kresolved_Ωin, kresolved_dOMM, evalmat, plotmap, plotmap!
     export save_to_csv
-    export script_path
+    export script_path, slurm_submit_interpolations
 end
