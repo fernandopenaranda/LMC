@@ -10,14 +10,15 @@
 #SBATCH --error=slurm-%A.%a.err
 #SBATCH --mail-user=fernando.penaranda@dipc.org
 
-Ezmin=$1
-Ezmax=$2
-evals=$3
-N=$4
-eta=$5
+pathtofile=$1
+Ezmin=$2
+Ezmax=$3
+evals=$4
+N=$5
+eta=$6
 
 echo "My SLURM_ARRAY_JOB_ID is $SLURM_ARRAY_JOB_ID."
 echo "My SLURM_ARRAY_TASK_ID is $SLURM_ARRAY_TASK_ID"
 echo "Array length: $SLURM_ARRAY_TASK_MAX"
 
-julia --compiled-modules=no /scratch/ferpe/.julia/packages/LMC/3B4WF/src/cluster/interpolations.jl  $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $Ezmin $Ezmax $evals $N $eta
+julia --compiled-modules=no $pathtofile $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $Ezmin $Ezmax $evals $N $eta
