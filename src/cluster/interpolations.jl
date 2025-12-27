@@ -18,13 +18,12 @@ cpt = Computation_params(estimated_bound_width, evals, η)
 p = Params_rhombohedral(1, 0, 3160, 390, -20, 315, 44, 0, 0)
 intp = Interpolated_params(N, p, [Ez], cpt)
 
-data_folder = pwd() * "/Data/Interpolations/" * string(PID) * "/" * string(job_id) * "/"
-save_to_csv(intp, data_folder * "presets.csv")
+data_folder = pwd() * "/Data/Interpolations/" * string(PID) * "/" * string(job_id)
+save_to_csv(intp, data_folder * "/presets.csv")
 
 Ezs, ϵ_mat, int_dos_mat, int_n_mat = interpolated_dos_ns_Ez(intp);
-@save data_folder * "interpolateddata.jld" Ezs ϵ_mat int_dos_mat int_n_mat
+@save data_folder * "/interpolateddata.jld" Ezs ϵ_mat int_dos_mat int_n_mat
 
 str = pwd() * "/slurm-" * string(PID) * "." * string(job_id)
-str_dest = pwd() * "/Data" * "/" * string(PID) * "/" * string(job_id) * "/"
-mv(str * ".out", str_dest * "output.out")
-mv(str * ".err", str_dest * "error.err")
+mv(str * ".out", data_foder * "/output.out")
+mv(str * ".err", data_folder * "/error.err")
