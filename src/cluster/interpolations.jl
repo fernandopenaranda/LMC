@@ -13,7 +13,7 @@ print("Starting...")
 Ez = range(Ezmin, Ezmax, step = (Ezmax-Ezmin)/jobs_num)[job_id+1]
 estimated_bound_width = 10
 
-using LMC, CSV
+using LMC, CSV, JLD2
 cpt = Computation_params(estimated_bound_width, evals, η)
 p = Params_rhombohedral(1, 0, 3160, 390, -20, 315, 44, 0, 0)
 intp = Interpolated_params(N, p, [Ez], cpt)
