@@ -26,5 +26,5 @@ Ezs, ϵ_mat, int_dos_mat, int_n_mat = interpolated_dos_ns_Ez(intp);
 @save data_folder * "/interpolateddata.jld" Ezs ϵ_mat int_dos_mat int_n_mat
 
 str = pwd() * "/slurm-" * string(PID) * "." * string(job_id)
-mv(str * ".out", data_foder * "/output.out")
+mv(str * ".out", data_folder * "/output.out")
 mv(str * ".err", data_folder * "/error.err")
