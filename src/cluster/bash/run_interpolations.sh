@@ -20,4 +20,4 @@ echo "My SLURM_ARRAY_JOB_ID is $SLURM_ARRAY_JOB_ID."
 echo "My SLURM_ARRAY_TASK_ID is $SLURM_ARRAY_TASK_ID"
 echo "Array length: $SLURM_ARRAY_TASK_MAX"
 
-julia --compiled-modules=no /scratch/ferpe/.julia/packages/LMC/3B4WF/src/cluster/interpolations.jl  $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX  $Ezmin $Ezmax $evals $N $eta
+julia --compiled-modules=no /scratch/ferpe/.julia/packages/LMC/3B4WF/src/cluster/interpolations.jl  $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $Ezmin $Ezmax $evals $N $eta

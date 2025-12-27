@@ -29,10 +29,10 @@ module LMC
     const ħ_ev_s = (ħ |> u"eV*s").val
     const ang_to_m = 1e-10
 
-    proj_folder = normpath(joinpath(@__DIR__, "..")) * "src"
-    rhomb_folder = proj_folder * "/model/rhombohedral/"
-    common_folder = proj_folder * "/comfunctions/"
-    figures_folder = proj_folder * "/Paper/Figures/"
+    const proj_folder = normpath(joinpath(@__DIR__, "..")) * "src"
+    const rhomb_folder = proj_folder * "/model/rhombohedral/"
+    const common_folder = proj_folder * "/comfunctions/"
+    const figures_folder = proj_folder * "/Paper/Figures/"
 
     include(proj_folder * "/plot_init.jl")
     include(rhomb_folder * "model.jl")
