@@ -10,6 +10,7 @@ spinfull_plotbands!(kws...) = not_defined(kws...)
 plotmap(kws...) = not_defined(kws...)
 plotmap!(kws...) = not_defined(kws...)
 plot_dos!(kws...) = not_defined(kws...)
+plot_characters(kws...) = not_defined(kws...)
 
 function not_defined(args...)
     error("Load CairoMakie to enable plotting")

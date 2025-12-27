@@ -39,6 +39,7 @@ module LMC
     include(rhomb_folder * "observables.jl")
     include(rhomb_folder * "filling.jl")
     include(rhomb_folder * "wrapper_lmc.jl")
+    include(rhomb_folder * "comp_structs.jl")
     include(rhomb_folder * "spontaneous_sym_breakingmodels.jl")
     include(rhomb_folder * "local_hartree_optimization.jl")
     include(common_folder * "separate_contributions.jl")
@@ -47,15 +48,17 @@ module LMC
     export Params_rhombohedral, params_rhombohedral, xxx_lmc_presets, 
         lmc_presets, lmcshift_presets, lmcnoshift_presets, 
         xx_drude_presets, σxyahe_presets, qah_presets
+    export Interpolated_params, Computation_params
     export abc_Nlayer, dhxNlg, dhyNlg, dhxxNlg, rzNlg, abc_pentalayer
     export abck_Nbands, abck_bands, abcbz_path_gamma_k_m_gamma
     export rh_filling
     export c_dos, kresolvedlmc, k_Omegain, k_Omegaz, k_d_OMM
     export half_metal_presets, quarter_metal_presets
     export half_metal_plotbands, quarter_metal_plotbands, spinfull_plotbands, spinfull_plotbands!
-    export half_metal_dos, quarter_metal_dos, spinfull_dos, plot_dos!
+    export half_metal_dos, quarter_metal_dos, spinfull_dos, plot_dos!, plot_characters
     export μ_α, μ_αT
     export character, reshape_densities, interpolated_dos_ns_Ez, polarization
     export Emin_nαs, Emin_μαs, opt_μs, interpolated_dos, interpolated_n
     export klmc, kresolved_Ωz, kresolved_Ωin, kresolved_dOMM, evalmat, plotmap, plotmap!
+    export save_to_csv
 end

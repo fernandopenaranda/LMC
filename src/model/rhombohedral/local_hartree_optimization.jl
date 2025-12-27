@@ -8,18 +8,18 @@ quarter metal (quarter insulator)
 1 half_metal
 2 quarter
 """
-function character(nαs; ϵ = 1e-4)
+function character(nαs; ϵ = 1e-3)
     mat = reshape_densities(nαs)
-    logic_mat = 7 .* ones(size(mat[1],1), size(mat[1],2))
+    logic_mat = 1 .* ones(size(mat[1],1), size(mat[1],2))
         for i in 1:size(mat[1],1)
             for j in 1:size(mat[1],2)
                 # logic_mat[i,j] = is_symmetric([mat[k][i,j] for k in 1:4])
                 n = [mat[k][i,j] for k in 1:4]
-                ch = is_quarter(n, ϵ = 1e-4)
-                if ch == 1 # half metal
-                    vp_halfmetal = ifelse(abs(n[1]+n[3]-n[2]-n[4]) > ϵ, -1, 1) # this means that 
-                    ch *= vp_halfmetal
-                else nothing end
+                ch = is_quarter(n, ϵ = ϵ)
+                # if ch == 1 # half metal
+                #     vp_halfmetal = ifelse(abs(n[1]+n[3]-n[2]-n[4]) > ϵ, -1, 1) # this means that 
+                #     ch *= vp_halfmetal
+                # else nothing end
                 logic_mat[i,j] = ch
             end
         end
@@ -27,6 +27,7 @@ function character(nαs; ϵ = 1e-4)
 
 end
 is_symmetric(ns; ϵ = 1e-4) = ifelse(sum([(n-mean(ns))^2 for n in ns]) < ϵ, 0, 1)
+
 is_quarter(ns; ϵ = 1e-4) = is_symmetric(ns; ϵ = ϵ) * ifelse( abs(ns[1]+ns[3]-ns[2]-ns[4]) < ϵ || abs(ns[1]+ns[4] - ns[2]-ns[3])< ϵ, 1, 2)
 
 function reshape_densities(nαs)
@@ -47,6 +48,9 @@ end
 generate interpolated dos and ns as a function of Ez.
     T = 0
 """
+interpolated_dos_ns_Ez(intp::Interpolated_params) = interpolated_dos_ns_Ez(intp.N, intp.p, intp.Ezlist,
+    estimated_bound_width = intp.cpt.estimated_bound_width, evals = intp.cpt.evals, η = intp.cpt.η)
+
 function interpolated_dos_ns_Ez(N, p::Params_rhombohedral, Ezs::Union{Array, AbstractRange}; kws...)
     dos_mat = []
     n_mat = []
@@ -57,13 +61,13 @@ function interpolated_dos_ns_Ez(N, p::Params_rhombohedral, Ezs::Union{Array, Abs
         push!(n_mat, n)
         push!(e_mat, e)
     end
-    return e_mat, dos_mat, n_mat
+    return Ezs, e_mat, dos_mat, n_mat
 end
 
 function interpolated_dos_ns_Ez(N, p::Params_rhombohedral, Ez::Number;
      estimated_bound_width = 10, evals = 10, η = 0.05)
     np = xxx_lmc_presets(N, 0, 1, Params_rhombohedral(p, Delta_Ez = Ez), evals = evals)
-    ϵ_range, int_dos = interpolated_dos(np, 4estimated_bound_width, evals = evals, η = η)
+    ϵ_range, int_dos = interpolated_dos(np, 6estimated_bound_width, evals = evals, η = η)
     n = interpolated_n(int_dos, ϵ_range)
     return ϵ_range, int_dos, n
 end
@@ -111,7 +115,6 @@ I introduce a filling and one Ez
 """
 
 function Emin_nαs(int_dos_mat, n_mat, νarray;steps = 5, kws...)
-    println("hey")
     nαs = []
     μαs = []
     for i in 1:steps:length(n_mat)
@@ -122,19 +125,25 @@ function Emin_nαs(int_dos_mat, n_mat, νarray;steps = 5, kws...)
     return μαs, nαs # upper level is Ez, lower level is μ
 end
 
+
+
 function Emin_nαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, νarray; kws...)
     nαs = []
     μαs = []
-    println("hey")
+    clamp_bounds = [-60,60]
+    # this is required to avoid evaluating the interpolations beyond the data range
+    clamped_n(μ) = n(clamp(μ, clamp_bounds[1],clamp_bounds[2])) 
     for ν in νarray
-        int_n_mat
-        μ = 1e3 .* find_zero(μ -> int_n_mat[1](ν/4) - μ , 0.0)
-        #μ = 1e3 .* find_zero(μ -> n(μ) - ν/4, 0.0)
-        # println("μ: ", μ)
-        μs = Emin_μαs(int_dos, n, μ; kws...)
+        # μ = 1e3 .* find_zero(μ -> int_n_mat[1](ν/4) - μ , 0.0)
+        # μ = 1e3 .* find_zero(μ -> n(ν/4) - μ , 0.0)
+        # μ = find_zero(μ -> n(μ)- ν/4, 0.0)
+
+        μ = find_zero(μ -> clamped_n(μ) - ν/4, (clamp_bounds[1],clamp_bounds[2]), Bisection())
+        μs = Emin_μαs(int_dos, clamped_n, μ; kws...)
+        
         push!(nαs, n.(μs)) 
         push!(μαs, μs)
-    #sweep in the chemical potential for a constant value
+        #sweep in the chemical potential for a constant value
     end
     return μαs, nαs
 end
@@ -149,7 +158,7 @@ function Emin_μαs(int_dos_mat, n_mat, μarray, Ezarray; kws...)
 end
 
 
-function Emin_μαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, μarray; kws...)
+function Emin_μαs(int_dos::ScaledInterpolation, n::Union{ScaledInterpolation,Function}, μarray::Array; kws...)
     nαs = []
     for μ in μarray
         push!(nαs, n.(Emin_μαs(int_dos, n, μ; kws...))) 
@@ -160,7 +169,7 @@ end
 
 function Emin_μαs(p::Planar_σijk_presets_orbital, ν::Number; 
     evals = 1e2, η = 0.05, estimated_bound_width = 20, kws...) 
-    ϵ_range, int_dos = interpolated_dos(p, 4estimated_bound_width, evals = evals, η = η)
+    ϵ_range, int_dos = interpolated_dos(p, 6estimated_bound_width, evals = evals, η = η)
     n = interpolated_n(int_dos, ϵ_range)
     Emin_μαs(int_dos, n, ν; evals = evals, η = η, 
         estimated_bound_width = estimated_bound_width, kws...)
@@ -174,7 +183,7 @@ end
 #         estimated_bound_width = estimated_bound_width, kws...)
 # end
 
-function Emin_μαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, μ::Number; 
+function Emin_μαs(int_dos::ScaledInterpolation, n::Union{ScaledInterpolation,Function}, μ::Number; 
         random_guesses = 2, U = 0, J = 0, λ = 0, evals = 1e2, η = 0.05, 
         estimated_bound_width = 10, iterations = 100, int_model = :SU4) 
     
@@ -247,10 +256,10 @@ allow for the Dos struct.
 opt_μs(p::Planar_σijk_presets_orbital, μ0s::Vector{Int64}; evals = 10, η = 0.05, kws...) = 
     opt_μs(μ0s, interpolated_dos(p; evals = evals, η = η); kws...)
 
-opt_μs(μ0s, es_and_int_dos; kws...) = 
-    opt_μs(μ0s, interpolated_n(es_and_int_dos[2], es_and_int_dos[1]); kws...)
+# opt_μs(μ0s, es_and_int_dos; kws...) = 
+#     opt_μs(μ0s, interpolated_n(es_and_int_dos[2], es_and_int_dos[1]); kws...)
 
-function opt_μs(μ0s::Vector{Float64}, n::ScaledInterpolation;
+function opt_μs(μ0s::Vector{Float64}, n::Union{ScaledInterpolation,Function};
     μ = 0, U = 0, J = 0, λ = 0, evals = 1e2, η = 0.05, estimated_bound_width = 10, 
         iterations = 100, int_model = :SU4)
     lower = (-estimated_bound_width + μ) .* ones(4)
@@ -310,7 +319,8 @@ function objective_su2(n, μs, μ, U, J, λ)
     for (i,μi) in enumerate(μs)
         s += ( μi - μ +  
                U * sum([n(μi) for μi in μs[inds_not_alpha(i)]]) +
-               J * hund_coupling(i, n, μs))^2  
+               J * hund_coupling(i, n, μs))^2 
+   
     end
     obj = s + penalty_fixed_filling(n0, n, μs, λ = λ)
 end
@@ -345,10 +355,10 @@ that can be evaluated within bounds of μlist. ! this code paths is at 0 tempera
 """
 
 interpolated_dos(p::Planar_σijk_presets_orbital, bounds::Number; kws...) =
-    interpolated_dos(p; μlist = -bounds:bounds/100:bounds, kws...) 
+    interpolated_dos(p; μlist = -bounds:bounds/400:bounds, kws...) 
 
 function interpolated_dos(p::Planar_σijk_presets_orbital; 
-        μlist = -10.0:0.1:10.0, η = 0.05, evals = 100) 
+        μlist = -10.0:0.01:10.0, η = 0.05, evals = 100) 
     # println("Interpolating dos...")
     A = (1e-10)^2
     int_dos(ε) = A * c_dos(p, ε, η = η, evals = evals)[2][1]

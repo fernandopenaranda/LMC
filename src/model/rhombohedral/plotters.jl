@@ -141,3 +141,22 @@ function LMC.plotmap!(ax, kx, ky, Zs; colmap = missing, colrange = missing)
     return hm
     # cb = Colorbar(fig[1, 2], hm)
 end
+
+function LMC.plot_characters(N, U, J, Ezlist, νlist, ns)
+    characters = character(ns)
+    xvect = νlist
+    fig = Figure()
+    ax= Axis(fig[1,1], ylabel = "D [meV]", xlabel = "ν", title = "Character: N = $(N), U = $(U), J = $(J)")
+
+    scatter!(ax, [100], [100], color = :gray, label = "Symmetric", marker = :rect, markersize = 20)
+    scatter!(ax, [100], [100], color = :blue, label = "Half Metal SP", marker = :rect, markersize = 20)
+    scatter!(ax, [100], [100], color = :purple, label = "Half Metal VP", marker = :rect, markersize = 20)
+    scatter!(ax, [100], [100], color = :lightblue, label = "Quarter Metal/Insulator", marker = :rect, markersize = 20)
+    xlims!(ax, xvect[1], xvect[end])
+    ylims!(ax, Ezlist[1], Ezlist[end])
+    axislegend(ax, position = :rt)
+    levels = [-1, 0, 1, 2]
+    colors = [:purple, :gray, :blue, :lightblue]
+    hm =  heatmap!(ax,  xvect, Ezlist, characters', colormap = colors, levels = levels, colorrange = [-1,2])#, rasterize = true)
+    return fig
+end
