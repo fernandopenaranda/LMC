@@ -1,7 +1,7 @@
-const SCRIPT_DIR = normpath(joinpath(@__DIR__)) * "/src/cluster/bash/"
+# const SCRIPT_DIR = normpath(joinpath(@__DIR__)) * "/src/cluster/bash/"
 
 function script_path(name::String)
-    path = joinpath(SCRIPT_DIR, name)
+    path = joinpath(proj_folder * "/cluster/bash/", name)
     isfile(path) || error("Script not found: $name")
     return path
 end
