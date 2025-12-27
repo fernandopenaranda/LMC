@@ -6,7 +6,7 @@ function script_path(name::String)
     return path
 end
 
-function slurm_submit_interpolations(;Ezmin = -6, Ezmax = 6, evals = 10, N = 7, eta = 0.05; 
+function slurm_submit_interpolations(;Ezmin = -6, Ezmax = 6, evals = 10, N = 7, eta = 0.05,  
     dryrun=false)
     script = script_path("run_interpolations.sh")
     cmd = `sbatch $script $Ezmin $Ezmax $evals $N $eta`
