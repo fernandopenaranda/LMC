@@ -16,26 +16,20 @@ function to_dict(cpt::Computation_params)
     return Dict(
         :estimated_bound_width => cpt.estimated_bound_width,
         :evals => cpt.evals,
-        :η => cpt.η
-    )
+        :η => cpt.η)
 end
 
 function to_dict(ip::Interpolated_params)
     d = Dict{Symbol,Any}()
-
     d[:N] = ip.N
-
     # Params_rhombohedral (store as readable string)
     d[:p] = repr(ip.p)
-
     # Ezlist as comma-separated string
     d[:Ezlist] = join(ip.Ezlist, ",")
-
     # flatten Computation_params
     for (k, v) in to_dict(ip.cpt)
         d[k] = v
     end
-
     return d
 end
 

@@ -43,8 +43,8 @@ module LMC
     include(rhomb_folder * "spontaneous_sym_breakingmodels.jl")
     include(rhomb_folder * "local_hartree_optimization.jl")
     include(common_folder * "separate_contributions.jl")
+    include(proj_folder * "cluster/cluster_tools.jl")
 
-    #...
     export Params_rhombohedral, params_rhombohedral, xxx_lmc_presets, 
         lmc_presets, lmcshift_presets, lmcnoshift_presets, 
         xx_drude_presets, σxyahe_presets, qah_presets
@@ -61,4 +61,5 @@ module LMC
     export Emin_nαs, Emin_μαs, opt_μs, interpolated_dos, interpolated_n
     export klmc, kresolved_Ωz, kresolved_Ωin, kresolved_dOMM, evalmat, plotmap, plotmap!
     export save_to_csv
+    export script_path
 end
