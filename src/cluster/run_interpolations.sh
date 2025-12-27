@@ -21,13 +21,3 @@ echo "My SLURM_ARRAY_TASK_ID is $SLURM_ARRAY_TASK_ID"
 echo "Array length: $SLURM_ARRAY_TASK_MAX"
 
 julia --compiled-modules=no /scratch/ferpe/LMC/cluster_temp/src/atlas_run_randomJU.jl  $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX  $Ezmin $Ezmax $evals $N $eta
-
-
-
-
-
-
-
-
-
-
