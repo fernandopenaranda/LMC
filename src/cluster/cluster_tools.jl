@@ -33,7 +33,7 @@ function slurm_submit_phasediagrams(interpolationsPID::String;
     estimated_bound_width=10, iterations=10, int_mode=:SU2, random_guesses=20)
     Ezsteps = 1 # cannot change it. Same number of jobs as in interpolations
     lmcfolder = dirname(pathof(LMC)) * "/cluster/phase_diagrams.jl"
-    script = script_path("run_phase_diagrams.sh")
+    script = script_path("run_phasediagrams.sh")
     println("bash_file_name: ", script)
     cmd = `sbatch $script $lmcfolder $interpolationsPID $Ezsteps $nu_min $nu_max $nu_points $U $J $lambda $eta $estimated_bound_width $iterations $int_mode $random_guesses`
     dryrun && return cmd
