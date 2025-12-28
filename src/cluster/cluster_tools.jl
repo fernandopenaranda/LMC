@@ -15,6 +15,7 @@ function slurm_submit_interpolations(;Ezmin = -6, Ezmax = 6,
     dryrun && return cmd
     run(cmd)
 end
+ 
 
 """ computes the mus and alphas for the 4 spin/valley flavours
 selecting the energetically favored ground state in the presense
