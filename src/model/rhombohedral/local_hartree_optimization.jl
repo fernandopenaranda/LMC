@@ -114,7 +114,18 @@ The type of potential SU4 or SU2 (hunds coupling) is selected by int_model
 I introduce a filling and one Ez
 """
 
-function Emin_nαs(int_dos_mat, n_mat, νarray;steps = 5, kws...)
+Emin_nαs(int_dos_mat::ScaledInterpolation, n_mat::ScaledInterpolation, 
+    p::Phase_diagram_params) = 
+        Emin_nαs([int_dos_mat], [n_mat], range(p.νmin, p.νmax, 
+        step = (p.νmax-p.νmin)/p.νpoints); steps = p.Ezsteps, 
+        random_guesses = p.cpt.random_guesses, U = p.U, J = p.J, λ = p.cpt.λ, 
+        evals = p.cpt.evals, η = p.cpt.η, 
+        estimated_bound_width = p.cpt.estimated_bound_width, 
+        iterations = p.cpt.iterations,
+        int_model = p.int_model)
+
+
+function Emin_nαs(int_dos_mat::Array, n_mat::Array, νarray;steps = 5, kws...)
     nαs = []
     μαs = []
     for i in 1:steps:length(n_mat)
@@ -125,20 +136,22 @@ function Emin_nαs(int_dos_mat, n_mat, νarray;steps = 5, kws...)
     return μαs, nαs # upper level is Ez, lower level is μ
 end
 
-
-
-function Emin_nαs(int_dos::ScaledInterpolation, n::ScaledInterpolation, νarray; kws...)
+function Emin_nαs(int_dos::ScaledInterpolation, n::ScaledInterpolation,
+    νarray; kws...)
     nαs = []
     μαs = []
-    clamp_bounds = [-60,60]
+
+    clamp_bounds = [-55,55]
     # this is required to avoid evaluating the interpolations beyond the data range
     clamped_n(μ) = n(clamp(μ, clamp_bounds[1],clamp_bounds[2])) 
     for ν in νarray
         # μ = 1e3 .* find_zero(μ -> int_n_mat[1](ν/4) - μ , 0.0)
         # μ = 1e3 .* find_zero(μ -> n(ν/4) - μ , 0.0)
         # μ = find_zero(μ -> n(μ)- ν/4, 0.0)
-
-        μ = find_zero(μ -> clamped_n(μ) - ν/4, (clamp_bounds[1],clamp_bounds[2]), Bisection())
+        println(clamped_n(clamp_bounds[1])- ν/4)
+        println(clamped_n(clamp_bounds[2])- ν/4)
+        μ = find_zero(μ -> clamped_n(μ) - ν/4, (clamp_bounds[1],clamp_bounds[2]), 
+            Bisection())
         μs = Emin_μαs(int_dos, clamped_n, μ; kws...)
         
         push!(nαs, n.(μs)) 
@@ -150,6 +163,7 @@ end
 
 
 function Emin_μαs(int_dos_mat, n_mat, μarray, Ezarray; kws...)
+    
     nαs = []
     for (i, Ez) in enumerate(Ezarray)
         push!(nαs, Emin_nαs(int_dos_mat[i], n_mat[i], μarray; kws...)) 

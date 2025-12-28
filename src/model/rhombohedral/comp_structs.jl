@@ -2,7 +2,13 @@
     estimated_bound_width::Number
     evals::Number
     η::Float64
+    λ::Number = 1e5## penalty for not conserved number of particles
+    iterations::Int = 10
+    random_guesses::Int = 20
 end
+
+Computation_params(estimated_bound_width, evals, η) = 
+    Computation_params(estimated_bound_width, evals, η, 1e5, 10,20)
 
 @with_kw struct Interpolated_params
     N::Int # Number of layers
@@ -42,5 +48,18 @@ end
     N::Int # Number of layers
     p::Params_rhombohedral
     Ezlist::Array # Displacement fields
+    cpt::Computation_params
+end
+
+@with_kw struct Phase_diagram_params
+    N::Int # Number of layers
+    p::Params_rhombohedral
+    Ezsteps::Number # Displacement fields
+    νmin::Float64
+    νmax::Float64
+    νpoints::Int
+    int_model::Symbol
+    U::Number
+    J::Number
     cpt::Computation_params
 end

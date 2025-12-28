@@ -48,7 +48,7 @@ module LMC
     export Params_rhombohedral, params_rhombohedral, xxx_lmc_presets, 
         lmc_presets, lmcshift_presets, lmcnoshift_presets, 
         xx_drude_presets, σxyahe_presets, qah_presets
-    export Interpolated_params, Computation_params
+    export Interpolated_params, Computation_params, Phase_diagram_params
     export abc_Nlayer, dhxNlg, dhyNlg, dhxxNlg, rzNlg, abc_pentalayer
     export abck_Nbands, abck_bands, abcbz_path_gamma_k_m_gamma
     export rh_filling
