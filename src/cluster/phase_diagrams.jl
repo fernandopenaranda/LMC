@@ -44,6 +44,7 @@ df = CSV.read(filestring * "/presets.csv", DataFrame)
 #     nu_max = hard_up_bound
 # else nothing end
 
+using LMC
 print("Building structs...")
 cpt = Computation_params(estimated_bound_width, evals, η, λ, iterations,
     random_guesses)
