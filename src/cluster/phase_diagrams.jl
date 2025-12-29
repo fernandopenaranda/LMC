@@ -31,8 +31,8 @@ filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" *
 df = CSV.read(filestring * "/presets.csv", DataFrame)
 
 # ensure that there is always a root in findroot see Eμαs findzero
-hard_up_bound = maximum(int_n_mat.itp)
-hard_low_bound = minimum(int_n_mat.itp)
+hard_up_bound = maximum(int_n_mat[1].itp)
+hard_low_bound = minimum(int_n_mat[1].itp)
 
 if nu_min < hard_low_bound  
     nu_min = hard_low_bound
@@ -50,7 +50,7 @@ PD_presets = Phase_diagram_params(df.N, df.p, Ezsteps, nu_min, nu_max, nu_points
 
 print("Computation...")
 
-@time μs, ns = Emin_nαs(int_dos_mat, int_n_mat, PD_presets);
+@time μs, ns = Emin_nαs(int_dos_mat[1], int_n_mat[1], PD_presets);
 
 print("Storing...")
 
