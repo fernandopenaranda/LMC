@@ -31,16 +31,16 @@ filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" *
 @load filestring * "/interpolateddata.jld" Ezs ϵ_mat int_dos_mat int_n_mat
 @load filestring * "/presets.csv" intp
 
-# ensure that there is always a root in findroot see Eμαs findzero
-# hard_up_bound = maximum(int_n_mat[1].itp)
-# hard_low_bound = minimum(int_n_mat[1].itp)
+#ensure that there is always a root in findroot see Eμαs findzero
+hard_up_bound = maximum(int_n_mat[1].itp)
+hard_low_bound = minimum(int_n_mat[1].itp)
 
-# if nu_min < hard_low_bound  
-#     nu_min = hard_low_bound
-# else nothing end
-# if nu_max> hard_up_bound
-#     nu_max = hard_up_bound
-# else nothing end
+if nu_min < hard_low_bound  
+    nu_min = hard_low_bound
+else nothing end
+if nu_max> hard_up_bound
+    nu_max = hard_up_bound
+else nothing end
 
 
 print("Building structs...")
@@ -65,6 +65,6 @@ write(new_data_folder * "/output.txt", "Using interpolated data from $(dataPID)"
 nu_list = collect(range(nu_min, nu_max, step = (nu_max-nu_min)/nu_points))
 mus = μs[1][1]
 nss = ns[1][1]
-@save new_data_folder * "/pddata.jld" nu_list, mus, nss, df.Ez
+@save new_data_folder * "/pddata.jld" nu_list mus nss p.Ez
 
 print("Success!")
