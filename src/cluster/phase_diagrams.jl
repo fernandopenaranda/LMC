@@ -1,3 +1,7 @@
+for (i, a) in enumerate(ARGS)
+    @info "ARGS[$i] = $a"
+end
+
 job_id = parse(Int, ARGS[1])
 jobs_num = parse(Int, ARGS[2])
 PID = ARGS[3]
