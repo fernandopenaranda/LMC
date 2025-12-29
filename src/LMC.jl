@@ -64,6 +64,6 @@ module LMC
     export Emin_nαs, Emin_μαs, opt_μs, interpolated_dos, interpolated_n
     export klmc, kresolved_Ωz, kresolved_Ωin, kresolved_dOMM, evalmat, plotmap, plotmap!
     export save_to_csv
-    export script_path, slurm_submit_interpolations, slurm_submit_phasediagrams
     export lmc_map, drude_map, ahe_map, map_eval, Ez_map_eval
+    export script_path, slurm_submit_interpolations, slurm_submit_phasediagrams, slurm_submit_observable
 end
