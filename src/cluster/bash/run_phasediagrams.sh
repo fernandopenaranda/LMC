@@ -19,16 +19,15 @@ nu_points=$6
 U=$7
 J=$8
 lambda=$9
-eta=$10
-estimated_bound_width=$11
-iterations=$12
-int_mode=$13
-random_guesses=$14
+eta=${10}
+estimated_bound_width=${11}
+iterations=${12}
+int_mode=${13}
+random_guesses=${14}
 
 echo "My SLURM_ARRAY_JOB_ID is $SLURM_ARRAY_JOB_ID."
 echo "My SLURM_ARRAY_TASK_ID is $SLURM_ARRAY_TASK_ID"
 echo "Array length: $SLURM_ARRAY_TASK_MAX"
 echo "pathoffile: $pathtofile"
-echo "eta: $eta"
 
 julia --compiled-modules=no $pathtofile $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $interpolPID $Ezsteps $nu_min $nu_max $nu_points $U $J $lambda $eta $estimated_bound_width $iterations $int_mode $random_guesses
