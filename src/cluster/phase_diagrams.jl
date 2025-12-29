@@ -2,6 +2,7 @@ job_id = parse(Int, ARGS[1])
 jobs_num = parse(Int, ARGS[2])
 PID = ARGS[3]
 dataPID = ARGS[4]     # PID of the process that generated the interpolated data
+println("dataPID: ", dataPID)
 Ezsteps = parse(Int, ARGS[5])
 nu_min = parse(Float64, ARGS[6])
 nu_max = parse(Float64, ARGS[7])
