@@ -65,6 +65,7 @@ write(new_data_folder * "/output.txt", "Using interpolated data from $(dataPID)"
 nu_list = collect(range(nu_min, nu_max, step = (nu_max-nu_min)/nu_points))
 mus = μs[1][1]
 nss = ns[1][1]
-@save new_data_folder * "/pddata.jld" nu_list mus nss p.Ez
+Ez = p.Ez
+@save new_data_folder * "/pddata.jld" nu_list mus nss Ez
 
 print("Success!")
