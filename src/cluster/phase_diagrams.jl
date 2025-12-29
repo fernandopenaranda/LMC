@@ -24,6 +24,10 @@ random_guesses = parse(Int, ARGS[16])
 
 println("Importing interpolating data")
 
+using Pkg
+println(versioninfo())
+println(Pkg.status())
+
 using JLD2, CSV, DataFrames
 filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" * 
     string(job_id) 
