@@ -34,15 +34,15 @@ filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" *
 df = CSV.read(filestring * "/presets.csv", DataFrame)
 
 # ensure that there is always a root in findroot see Eμαs findzero
-hard_up_bound = maximum(int_n_mat[1].itp)
-hard_low_bound = minimum(int_n_mat[1].itp)
+# hard_up_bound = maximum(int_n_mat[1].itp)
+# hard_low_bound = minimum(int_n_mat[1].itp)
 
-if nu_min < hard_low_bound  
-    nu_min = hard_low_bound
-else nothing end
-if nu_max> hard_up_bound
-    nu_max = hard_up_bound
-else nothing end
+# if nu_min < hard_low_bound  
+#     nu_min = hard_low_bound
+# else nothing end
+# if nu_max> hard_up_bound
+#     nu_max = hard_up_bound
+# else nothing end
 
 print("Building structs...")
 cpt = Computation_params(estimated_bound_width, evals, η, λ, iterations,
