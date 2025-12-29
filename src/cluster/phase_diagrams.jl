@@ -29,7 +29,7 @@ using JLD2, CSV, DataFrames
 filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" * 
     string(job_id) 
 @load filestring * "/interpolateddata.jld" Ezs ϵ_mat int_dos_mat int_n_mat
-df = CSV.read(filestring * "/presets.csv", DataFrame)
+@load filestring * "/presets.csv" intp
 
 # ensure that there is always a root in findroot see Eμαs findzero
 # hard_up_bound = maximum(int_n_mat[1].itp)
@@ -47,7 +47,7 @@ print("Building structs...")
 cpt = Computation_params(estimated_bound_width, evals, η, λ, iterations,
     random_guesses)
 
-PD_presets = Phase_diagram_params(df.N, df.p, Ezsteps, nu_min, nu_max, nu_points,
+PD_presets = Phase_diagram_params(intp.N, intp.p, Ezsteps, nu_min, nu_max, nu_points,
     int_model, U, J, cpt)
 
 print("Computation...")
@@ -59,7 +59,7 @@ print("Storing...")
 new_data_folder = pwd() * "/Data/PhaseDiagrams/" * string(PID) * "/" * string(job_id)
 mkpath(new_data_folder)
 
-save_to_csv(PD_presets, new_data_folder * "/presets.csv")
+@save new_data_folder * "/presets.csv" PD_presets
 write(new_data_folder * "/output.txt", "Using interpolated data from $(dataPID)")
 
 nu_list = collect(range(nu_min, nu_max, step = (nu_max-nu_min)/nu_points))

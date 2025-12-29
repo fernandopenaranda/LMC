@@ -1,0 +1,12 @@
+estimated_bound_width,N,p,evals,Ezlist,η
+10,7,"Params_rhombohedral
+  ξ: Int64 1
+  μ: Float64 0.0
+  γ0: Float64 3160.0
+  γ1: Float64 390.0
+  γ2: Float64 -20.0
+  γ3: Float64 315.0
+  γ4: Float64 44.0
+  Delta_Ez: Float64 0.0
+  Valley_asym: Float64 0.0
+",500,"0,3,6",0.05

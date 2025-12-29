@@ -39,10 +39,10 @@ function to_dict(ip::Interpolated_params)
     return d
 end
 
-function save_to_csv(ip::Interpolated_params, filename::String)
-    df = DataFrame([to_dict(ip)])
-    CSV.write(filename, df)
-end
+# function save_to_csv(ip::Union{Interpolated_params, Phase_diagram_params}, filename::String)
+#     df = DataFrame([to_dict(ip)])
+#     CSV.write(filename, df)
+# end
 
 @with_kw struct Drude_params
     N::Int # Number of layers
