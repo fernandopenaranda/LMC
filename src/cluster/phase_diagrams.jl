@@ -59,8 +59,8 @@ print("Storing...")
 new_data_folder = pwd() * "/Data/PhaseDiagrams/" * string(PID) * "/" * string(job_id)
 mkpath(new_data_folder)
 
-@save new_data_folder * "/presets.csv" PD_presets
-write(new_data_folder * "/output.txt", "Using interpolated data from $(dataPID)")
+@save new_data_folder * "/presets.jld" PD_presets dataPID
+# write(new_data_folder * "/output.txt", "Using interpolated data from $(dataPID)")
 
 nu_list = collect(range(nu_min, nu_max, step = (nu_max-nu_min)/nu_points))
 mus = μs

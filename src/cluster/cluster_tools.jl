@@ -39,3 +39,14 @@ function slurm_submit_phasediagrams(interpolationsPID::Union{String,Number};
     dryrun && return cmd
     run(cmd)
 end
+
+"""using the results of the Hartree algorithm it computes a given observable 
+in Drude, LMC_orbital, LMC_spin, QAH"""
+function slurm_submit_qah(phasediagramPID::Union{String,Number};
+    dryrun=false, evals = 10, T = 1, tau = 200, which_observable = "Drude")
+    lmcfolder = dirname(pathof(LMC)) * "/cluster/observable.jl"
+    script = script_path("run_observable.sh")
+    cmd = `sbatch $script $lmcfolder $phasediagramPID $evals $T $tau $which_observable`
+    dryrun && return cmd
+    run(cmd)
+end

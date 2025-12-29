@@ -42,14 +42,16 @@ module LMC
     include(rhomb_folder * "comp_structs.jl")
     include(rhomb_folder * "spontaneous_sym_breakingmodels.jl")
     include(rhomb_folder * "local_hartree_optimization.jl")
+    include(rhomb_folder * "observable_maps.jl")
     include(common_folder * "separate_contributions.jl")
     include(proj_folder * "/cluster/cluster_tools.jl")
+
     
 
     export Params_rhombohedral, params_rhombohedral, xxx_lmc_presets, 
         lmc_presets, lmcshift_presets, lmcnoshift_presets, 
         xx_drude_presets, σxyahe_presets, qah_presets
-    export Interpolated_params, Computation_params, Phase_diagram_params
+    export Interpolated_params, Computation_params, Phase_diagram_params, Observable_computation
     export abc_Nlayer, dhxNlg, dhyNlg, dhxxNlg, rzNlg, abc_pentalayer
     export abck_Nbands, abck_bands, abcbz_path_gamma_k_m_gamma
     export rh_filling
@@ -63,4 +65,5 @@ module LMC
     export klmc, kresolved_Ωz, kresolved_Ωin, kresolved_dOMM, evalmat, plotmap, plotmap!
     export save_to_csv
     export script_path, slurm_submit_interpolations, slurm_submit_phasediagrams
+    export lmc_map, drude_map, ahe_map, map_eval, Ez_map_eval
 end

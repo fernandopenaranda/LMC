@@ -63,3 +63,15 @@ end
     J::Number
     cpt::Computation_params
 end
+
+@with_kw struct Observable_computation
+    job_id
+    jobs_num
+    PID
+    interpPID  # PID of the process that generated the interpolated data
+    phasediagPID    # PID of the process that generated the hartree mus and nss out of interpolated data with PID interpPID
+    evals
+    T # temperature a <= eta/kb ~ 1K, since this is really a T=0 limit and in the Phase diagram T = 0 and there are only broadening effects
+    tau
+    which_observable
+end
