@@ -24,7 +24,7 @@ using JLD2, CSV, DataFrames, Interpolations, LMC, Optics_in_the_length_gauge
 
 # import data from the hartree calculation and presets
 pd_filestring = pwd() * "/Data/PhaseDiagrams/" * string(phasediagPID) * "/" * string(job_id)
-@load pd_filestring * "/interpolateddata.jld" nu_list mus nss Ezs
+@load pd_filestring * "/pd_data.jld" nu_list mus nss Ezs
 @load pd_filestring  * "/presets.jld" PD_presets dataPID
 
 
