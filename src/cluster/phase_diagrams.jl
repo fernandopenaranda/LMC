@@ -25,7 +25,7 @@ println("Importing interpolating data")
 using Pkg
 println(Pkg.status())
 
-using JLD2, CSV, DataFrames
+using JLD2, CSV, DataFrames, Interpolations, LMC
 filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" * 
     string(job_id) 
 @load filestring * "/interpolateddata.jld" Ezs ϵ_mat int_dos_mat int_n_mat
@@ -42,7 +42,7 @@ filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" *
 #     nu_max = hard_up_bound
 # else nothing end
 
-using LMC
+
 print("Building structs...")
 cpt = Computation_params(estimated_bound_width, evals, η, λ, iterations,
     random_guesses)
