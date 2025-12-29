@@ -7,11 +7,11 @@ function script_path(name::String)
 end
 
 function slurm_submit_interpolations(;Ezmin = -6, Ezmax = 6, 
-    evals = 10, N = 7, eta = 0.05,  dryrun=false)
+    evals = 10, N = 7, eta = 0.05, phs = 0, dryrun=false)
     lmcfolder = dirname(pathof(LMC)) * "/cluster/interpolations.jl"
     script = script_path("run_interpolations.sh")
     println("bash_file_name: ", script)
-    cmd = `sbatch $script $lmcfolder $Ezmin $Ezmax $evals $N $eta`
+    cmd = `sbatch $script $lmcfolder $Ezmin $Ezmax $evals $N $eta $phs`
     dryrun && return cmd
     run(cmd)
 end

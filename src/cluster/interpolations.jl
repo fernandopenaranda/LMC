@@ -6,6 +6,7 @@ Ezmax = parse(Float64, ARGS[5])
 evals = parse(Int, ARGS[6])
 N = parse(Int, ARGS[7])
 η = parse(Float64, ARGS[8])
+phs = parse(Int, ARGS[9]) # makes ph assymetric gamma 4 term
 
 print("Starting...")
 
@@ -15,7 +16,7 @@ estimated_bound_width = 10
 
 using LMC, CSV, JLD2
 cpt = Computation_params(estimated_bound_width, evals, η)
-p = Params_rhombohedral(1, 0, 3160, 390, -20, 315, 44, 0, 0)
+p = Params_rhombohedral(1, 0, 3160, 390, -20, 315, phs * 44, 0, 0)
 intp = Interpolated_params(N, p, [Ez], cpt)
 
 data_folder = pwd() * "/Data/Interpolations/" * string(PID) * "/" * string(job_id)

@@ -16,9 +16,10 @@ Ezmax=$3
 evals=$4
 N=$5
 eta=$6
+phs=$7
 
 echo "My SLURM_ARRAY_JOB_ID is $SLURM_ARRAY_JOB_ID."
 echo "My SLURM_ARRAY_TASK_ID is $SLURM_ARRAY_TASK_ID"
 echo "Array length: $SLURM_ARRAY_TASK_MAX"
 
-/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no $pathtofile $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $Ezmin $Ezmax $evals $N $eta
+/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no $pathtofile $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $Ezmin $Ezmax $evals $N $eta $phs
