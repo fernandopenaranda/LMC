@@ -33,7 +33,7 @@ end
 #_________________________________________________________________________________________
 # Evaluator
 #_________________________________________________________________________________________
-function map_eval(obs, presets, μαs, Ezlist, νlist)
+function map_eval(obs, presets::Union{Planar_σijk_presets_orbital, AH_presets, σij_presets}, μαs, Ezlist, νlist)
     μs = reshape_densities(μαs)
     dimx = size(μs[1],1)
     dimy = size(μs[1],2)
@@ -43,6 +43,21 @@ function map_eval(obs, presets, μαs, Ezlist, νlist)
         for (j, ν) in enumerate(νlist)
             mat[i,j] = sum([obs(presets(ξ = ξs[k], Ez = Ez, μ = μs[k][i,j])) for k in 1:4]) # sum over the 4 flavors
             # mat[i,j] = obs(presets(ξ = ξs[1], Ez = Ez, μ = μs[1][i,j])) # single flavour
+        end
+    end
+    return mat
+end
+
+function map_eval(obs, presets::Planar_σijk_presets_spin, μαs, Ezlist, νlist)
+    μs = reshape_densities(μαs)
+    dimx = size(μs[1],1)
+    dimy = size(μs[1],2)
+    ξs = [1, -1, 1, -1] # valley array
+    σs = [1, 1, -1, -1] # spin array
+    mat = zeros(Float64, dimx, dimy)
+    for (i,Ez) in enumerate(Ezlist)
+        for (j, ν) in enumerate(νlist)
+            mat[i,j] = sum([σs[k] * obs(presets(ξ = ξs[k], Ez = Ez, μ = μs[k][i,j])) for k in 1:4]) # sum over the 4 flavors note the spin prefactor due to Hunds coupling
         end
     end
     return mat

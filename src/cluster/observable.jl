@@ -41,9 +41,14 @@ elseif which_observable == "LMC_orbital" # note generalised to spin!!!!!!
         T = T, τ = tau, evals = evals, berry_contribution = true,
         omm_contribution = true, fermi_surface = false, with_shift= false)
 
-# elseif which_observable == "LMC_spin" # orbital + spin To do
-#     obs = linear_magneto_conductivity
-#     linear_magneto_conductivity(Planar_σijk_presets_spin([1I,1I,1I], lmcnoshift_presets(μ, 1, evals)))
+elseif which_observable == "LMC_spin" #
+    obs = linear_magneto_conductivity_spin
+    presets(; ξ, Ez, μ) = Planar_σijk_presets_spin([1I,1I,1I],
+        xxx_lmc_presets(PD_presets.N, 
+            Params_rhombohedral(PD_presets.p, ξ = ξ, μ = μ, Delta_Ez = Ez),
+            T = T, τ = tau, evals = evals, berry_contribution = true,
+            omm_contribution = true, fermi_surface = false, with_shift= false))
+
 elseif which_observable == "QAH" 
     obs = σij_anomalous_hall
     presets(; ξ, Ez, μ) = 
