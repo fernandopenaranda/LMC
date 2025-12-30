@@ -31,4 +31,8 @@ echo "My SLURM_ARRAY_TASK_ID is $SLURM_ARRAY_TASK_ID"
 echo "Array length: $SLURM_ARRAY_TASK_MAX"
 echo "pathoffile: $pathtofile"
 
-/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no $pathtofile $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $interpolPID $Ezsteps $nu_min $nu_max $nu_points $U $J $lambda $eta $estimated_bound_width $iterations $int_mode $random_guesses $evals
+CMD="/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no $pathtofile $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $interpolPID $Ezsteps $nu_min $nu_max $nu_points $U $J $lambda $eta $estimated_bound_width $iterations $int_mode $random_guesses $evals"
+if [ "${SLURM_ARRAY_TASK_ID:-0}" -eq 1 ]; then
+    printf "JOBID=%s CMD=%s\n" "$SLURM_ARRAY_JOB_ID" "$CMD" >> "julia_command_phasediagrams.txt"
+fi
+exec $CMD
