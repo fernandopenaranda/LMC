@@ -27,3 +27,4 @@ CMD="/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no $pathtofile $SLU
 if [ "${SLURM_ARRAY_TASK_ID:-0}" -eq 1 ]; then
     printf "JOBID=%s CMD=%s\n" "$SLURM_ARRAY_JOB_ID" "$CMD" >> "julia_command_interpolations.txt"
 fi
+exec $CMD
