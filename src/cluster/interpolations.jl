@@ -21,7 +21,7 @@ intp = Interpolated_params(N, p, [Ez], cpt)
 
 data_folder = pwd() * "/Data/Interpolations/" * string(PID) * "/" * string(job_id)
 mkpath(data_folder)
-@save data_folder * "/presets.csv" intp
+@save data_folder * "/presets.jld" intp
 
 Ezs, ϵ_mat, int_dos_mat, int_n_mat = interpolated_dos_ns_Ez(intp);
 @save data_folder * "/interpolateddata.jld" Ezs ϵ_mat int_dos_mat int_n_mat
