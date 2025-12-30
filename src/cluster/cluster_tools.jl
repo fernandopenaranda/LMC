@@ -11,7 +11,7 @@ function slurm_submit_interpolations(;Ezmin = -6, Ezmax = 6,
     lmcfolder = dirname(pathof(LMC)) * "/cluster/interpolations.jl"
     script = script_path("run_interpolations.sh")
     println("bash_file_name: ", script)
-    cmd = `sbatch $script $lmcfolder $Ezmin $Ezmax $evals $N $eta $phs`
+    cmd = `sbatch --wait $script $lmcfolder $Ezmin $Ezmax $evals $N $eta $phs`
     dryrun && return cmd
     run(cmd)
 end
@@ -35,7 +35,7 @@ function slurm_submit_phasediagrams(interpolationsPID::Union{String,Number};
     Ezsteps = 1 # cannot change it. Same number of jobs as in interpolations
     lmcfolder = dirname(pathof(LMC)) * "/cluster/phase_diagrams.jl"
     script = script_path("run_phasediagrams.sh")
-    cmd = `sbatch $script $lmcfolder $interpolationsPID $Ezsteps $nu_min $nu_max $nu_points $U $J $lambda $eta $estimated_bound_width $iterations $int_mode $random_guesses $evals`
+    cmd = `sbatch --wait $script $lmcfolder $interpolationsPID $Ezsteps $nu_min $nu_max $nu_points $U $J $lambda $eta $estimated_bound_width $iterations $int_mode $random_guesses $evals`
     dryrun && return cmd
     run(cmd)
 end
@@ -46,7 +46,7 @@ function slurm_submit_observable(phasediagramPID::Union{String,Number};
     dryrun=false, evals = 10, T = 1, tau = 200, which_observable = "Drude")
     lmcfolder = dirname(pathof(LMC)) * "/cluster/observable.jl"
     script = script_path("run_observable.sh")
-    cmd = `sbatch $script $lmcfolder $phasediagramPID $evals $T $tau $which_observable`
+    cmd = `sbatch --wait $script $lmcfolder $phasediagramPID $evals $T $tau $which_observable`
     dryrun && return cmd
     run(cmd)
 end
