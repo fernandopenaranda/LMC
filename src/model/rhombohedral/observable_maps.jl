@@ -47,7 +47,7 @@ function map_eval(obs, presets::Union{Planar_σijk_presets_orbital, AH_presets, 
     end
     return mat
 end
-
+#separate method for spin contribution to the lmc
 function map_eval(obs, presets::Planar_σijk_presets_spin, μαs, Ezlist, νlist)
     μs = reshape_densities(μαs)
     dimx = size(μs[1],1)

@@ -293,8 +293,10 @@ function opt_μs(objective, n0, n, μ0s, μ, U, J, λ, lower, upper, iterations)
             lower, # lower bounds of μαs    
             upper, # upper bounds of μαs
             μ0s,   # seed
-            Fminbox(BFGS()), 
-            Optim.Options(g_tol = 1e-12,
+            Fminbox(
+                LBFGS(linesearch = LineSearches.BackTracking())),
+            #Fminbox(BFGS()), 
+            Optim.Options(g_tol = 1e-8,
                 iterations = iterations,    
                 store_trace = false,
                 show_trace = false,
