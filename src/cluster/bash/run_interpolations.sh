@@ -23,4 +23,7 @@ echo "My SLURM_ARRAY_TASK_ID is $SLURM_ARRAY_TASK_ID"
 echo "Array length: $SLURM_ARRAY_TASK_MAX"
 
 CMD="/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no $pathtofile $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $Ezmin $Ezmax $evals $N $eta $phs"
-echo "CMD" >> julia_command.txt
+
+if [ "${SLURM_ARRAY_TASK_ID:-0}" -eq 1 ]; then
+    printf "JOBID=%s CMD=%s\n" "$SLURM_ARRAY_JOB_ID" "$CMD" >> "julia_command_interpolations.txt"
+fi
