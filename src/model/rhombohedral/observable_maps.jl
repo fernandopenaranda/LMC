@@ -63,23 +63,20 @@ function map_eval(obs, presets::Planar_σijk_presets_spin, μαs, Ezlist, νlist
     return mat
 end
 
-function Ez_map_eval(obs, presets::Union{Planar_σijk_presets_orbital, AH_presets, σij_presets}, μs, Ez, νlist)
+function Ez_map_eval(obs, presets, μs, Ez, νlist)
     ξs = [1, -1, 1, -1]
     obs_list = zeros(length(νlist))
-    for (j, ν) in enumerate(νlist)
-       obs_list[j] = sum([obs(presets(ξ = ξs[k], Ez = Ez, μ = μs[j][k])) 
-            for k in 1:4]) # sum over the 4 flavors
-    end
-    return obs_list
-end
-
-function Ez_map_eval(obs, presets::Planar_σijk_presets_spin, μs, Ez, νlist)
-    ξs = [1, -1, 1, -1]
-    σs = [1, 1, -1, -1] # spin array
-    obs_list = zeros(length(νlist))
-    for (j, ν) in enumerate(νlist)
-       obs_list[j] = sum([σs[k] * obs(presets(ξ = ξs[k], Ez = Ez, μ = μs[j][k])) # sum over the 4 flavors note the spin prefactor due to Hunds coupling
-            for k in 1:4]) # sum over the 4 flavors
+    if obs == linear_magneto_conductivity_spin
+        σs = [1, 1, -1, -1] # spin array
+        for (j, ν) in enumerate(νlist)
+            obs_list[j] = sum([σs[k] * obs(presets(ξ = ξs[k], Ez = Ez, μ = μs[j][k]))
+                 for k in 1:4]) # sum over the 4 flavors
+         end
+    else
+        for (j, ν) in enumerate(νlist)
+            obs_list[j] = sum([obs(presets(ξ = ξs[k], Ez = Ez, μ = μs[j][k])) 
+                 for k in 1:4]) # sum over the 4 flavors
+         end
     end
     return obs_list
 end
