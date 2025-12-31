@@ -1,4 +1,28 @@
 #using LMC, JLD2 # needs to load LMC structures to approately read the preset files
+""" 
+    RUN IT IN /scratch/ferpe/LMC folder it:
+        1) merges all subfolder files within PID 
+        2) creates two merged files inside the PID folder with presets
+        3) copies all relevant files to the home folder
+"""
+function copy_merged_folder(folderPID)
+    if pwd() != "/scratch/ferpe/LMC"
+        throw(ArgumentError("run this in LMC folder in /scratch/folder"))
+    else nothing end
+    merged_filenames = data_merge(folderPID)
+    homedir() * "/LMC"
+    pathtoPID = find_folder(folderPID) 
+    # data files and presets
+    cp(merged_filenames[1], homedir() * "/LMC/" * basename(dirname(merged_filenames[1])) * "_" * basename(merged_filenames[1]) )
+    cp(merged_filenames[2], homedir() * "/LMC/" * basename(dirname(merged_filenames[2])) * "_" * basename(merged_filenames[2]) )
+    # .txt files with all commands
+    pathtofiles = glob("*.txt", pwd()) 
+    for f in pathtofiles 
+        cp(f, homedir() * "/LMC/" * basename(f); force=true)
+    end
+end
+
+
 """ once the slurm calculation if finished we run these julia functions on the cluster to create merged data files"""
 function data_merge(folderPID)
     merged = Dict{String,Any}()
@@ -10,8 +34,9 @@ function data_merge(folderPID)
         merged[f] = load(f)
     end
     presets = load(pathtopresets[1])
-    @save pathtoPID * "/merged_pd_data.jld" merged # data
+    @save pathtoPID * "/merged_data.jld" merged # data
     @save pathtoPID * "/merged_presets.jld" presets
+    return pathtoPID * "/merged_data.jld", pathtoPID * "/merged_presets.jld"
 end
 
 """ PID folder finder: e.g. PID = 0000001, 
