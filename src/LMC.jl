@@ -19,6 +19,7 @@ module LMC
     using NLsolve, Interpolations
     using JLD2, CSV, DataFrames
     using Optics_in_the_length_gauge #mine # ] add https://github.com/fernandopenaranda/Optics_in_the_length_gauge
+    using Glob
 
     const kB = (PhysicalConstants.CODATA2018.k_B |> u"eV/K").val
     const μB = (PhysicalConstants.CODATA2018.BohrMagneton |> u"eV/T").val
