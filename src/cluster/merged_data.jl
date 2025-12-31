@@ -6,7 +6,7 @@
         3) copies all relevant files to the home folder
 """
 function copy_merged_folder(folderPID)
-    if pwd() != "/scratch/ferpe/Projects/LMC"
+    if pwd() != "/scratch/ferpe/LMC"
         throw(ArgumentError("run this in LMC folder in /scratch/folder"))
     else nothing end
     merged_filenames = data_merge(folderPID)
