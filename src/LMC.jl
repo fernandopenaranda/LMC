@@ -45,6 +45,7 @@ module LMC
     include(rhomb_folder * "observable_maps.jl")
     include(common_folder * "separate_contributions.jl")
     include(proj_folder * "/cluster/cluster_tools.jl")
+    include(proj_folder * "/cluster/merged_data.jl")
 
     
 
@@ -65,5 +66,5 @@ module LMC
     export klmc, kresolved_Ωz, kresolved_Ωin, kresolved_dOMM, evalmat, plotmap, plotmap!
     export save_to_csv
     export lmc_map, drude_map, ahe_map, map_eval, Ez_map_eval
-    export script_path, slurm_submit_interpolations, slurm_submit_phasediagrams, slurm_submit_observable
+    export script_path, slurm_submit_interpolations, slurm_submit_phasediagrams, slurm_submit_observable, data_merge
 end
