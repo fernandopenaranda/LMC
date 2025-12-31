@@ -1,5 +1,5 @@
 #using LMC, JLD2 # needs to load LMC structures to approately read the preset files
-""" once the slurm calculation if finished we run these julia functions to create merged data files"""
+""" once the slurm calculation if finished we run these julia functions on the cluster to create merged data files"""
 function data_merge(folderPID)
     merged = Dict{String,Any}()
     pathtoPID = find_folder(folderPID) # run in LMC folder project creates the absolute path to PID
@@ -11,7 +11,7 @@ function data_merge(folderPID)
     end
     presets = load(pathtopresets[1])
     @save pathtoPID * "/merged_pd_data.jld" merged # data
-    @save pathtoPID * "/merged_presets" presets
+    @save pathtoPID * "/merged_presets.jld" presets
 end
 
 """ PID folder finder: e.g. PID = 0000001, 
