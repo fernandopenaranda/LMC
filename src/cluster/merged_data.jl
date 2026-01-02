@@ -25,7 +25,7 @@ end
 function data_merge(folderPID)
     merged = Dict{String,Any}()
     pathtoPID = find_folder(folderPID) # run in LMC folder project creates the absolute path to PID
-    pathtofiles = glob(joinpath("*", "data.jld"), pathtoPID) 
+    pathtofiles = glob(joinpath("*", "*data.jld"), pathtoPID) 
     sorted_paths = sort( pathtofiles, by = p -> parse(Int, basename(dirname(p)))) # sort numerically by folder order which is Ez order
     pathtopresets = glob(joinpath("*", "presets.jld"), pathtoPID) 
     for f in sorted_paths
