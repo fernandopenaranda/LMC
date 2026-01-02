@@ -1,6 +1,6 @@
 module LMC_CairoMakieExt
     using CairoMakie
-    using LMC
+    using LMC, JLD2
     println("Loaded plotting extension")
     proj_folder = normpath(joinpath(@__DIR__, "..")) * "src"
     rhomb_folder = proj_folder * "/model/rhombohedral/"

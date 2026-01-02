@@ -160,3 +160,117 @@ function LMC.plot_characters(N, U, J, Ezlist, νlist, ns)
     hm =  heatmap!(ax,  xvect, Ezlist, characters', colormap = colors, levels = levels, colorrange = [-1,2])#, rasterize = true)
     return fig
 end
+
+function LMC.plot_phasediagrams(pdpath, pdpresetpath)
+    ppd = load(pdpresetpath)
+    pddata = load(pdpath)
+    vals, vals2 = ppd["presets"]
+    _, pdpresets = vals
+    _, first_value = first(pddata["merged"])
+    keylist = keys(first_value)
+    Ezs = []
+    nss = []
+    for (path, d) in pddata["merged"]
+        Ez = d["Ezs"][1]
+        ns = d["nss"][1]
+        push!(Ezs, Ez)
+        push!(nss, ns)
+    end
+    sorted_inds = sortperm(Ezs)
+    νlist = first_value["nu_list"]
+    plot_characters(pdpresets.N, pdpresets.U, pdpresets.J, Ezs[sorted_inds], νlist, nss[sorted_inds])
+end
+
+function LMC.plot_cluster_bandsanddos(pdpath, pdpresetpath, Ezval, νval)
+    ppd = load(pdpresetpath)
+    pddata = load(pdpath)
+    vals, vals2 = ppd["presets"]
+    _, pdpresets = vals
+    _, first_value = first(pddata["merged"])
+    keylist = keys(first_value)
+    Ezs = []
+    muss = []
+    count = 1
+    for (path, d) in pddata["merged"]
+        Ez = d["Ezs"][1]
+        mus = d["mus"][1]
+        push!(Ezs, Ez)
+        push!(muss, mus)
+    end
+    
+    νlist = first_value["nu_list"]
+    idxnu = argmin(abs.(νlist .- νval))
+
+    idxEz = argmin(abs.(Ezs .- Ezval))
+    
+
+
+
+    spinfull_plotbandsanddos(pdpresets.N, pdpresets.p, νlist[idxnu], muss[idxEz][idxnu], Ezs[idxEz], collect(-10:0.1:10); points = 100, evals = 5e3, η = 0.1)
+end
+
+function LMC.spinfull_plotbandsanddos(N, p, nαs, μαs, Ez, μlist; points = 100, evals = 100, η = 0.05)
+
+    ps =[Params_rhombohedral(p, μ = μαs[1], ξ = 1, Delta_Ez = Ez, Valley_asym = 0),
+    Params_rhombohedral(p, μ = μαs[2], ξ = -1, Delta_Ez = Ez, Valley_asym = 0),
+    Params_rhombohedral(p, μ = μαs[3], ξ = 1, Delta_Ez = Ez, Valley_asym = 0),
+    Params_rhombohedral(p, μ = μαs[4], ξ = -1, Delta_Ez = Ez, Valley_asym = 0)]
+
+    
+    fig = Figure()
+    ax = Axis(fig[1, 1]; xlabel = "kx", ylabel = "E [meV]", 
+        title = "N = $(N), ν = $(round(sum(nαs),digits = 2)), Ez = $(round(Ez,digits = 2)) meV")
+    # spinfull_plotbands!(ax, N, p, μαs, Ez, points = points)
+    
+    
+    LMC.abcNplotbandsk(ax, N, points, ps[1]; ylims = [-1, 1])#, style = :solid)
+    LMC.abcNplotbandsk(ax, N, points, ps[2]; ylims = [-1, 1])#, style = :dash)
+    LMC.abcNplotbandsk(ax, N, points, ps[3]; ylims = [-1, 1])#, style = :solid)
+    LMC.abcNplotbandsk(ax, N, points, ps[4]; ylims = [-1, 1])#, style = :dash)
+    
+    ax2 = Axis(fig[1,2], xlabel = "μ [meV]", ylabel = "DOS (a.u.)", title = "ν = $(round(sum(nαs),digits = 2)), Ez = $(round(Ez,digits = 2)) meV")
+    ω, js = spinfull_dos(N, ps, η, evals, μlist)
+    plot_dos!(ax2, ω, js)
+    fig
+end
+
+
+function spinfull_plotbands(N, p, nαs, μαs, Ez; points = 100)
+    fig = Figure()
+    ax = Axis(fig[1:2, 0]; xlabel = "kx", ylabel = "E [meV]", title = "N = $(N), ν = $(round(sum(nαs),digits = 2)), Ez = $(round(Ez,digits = 2)) meV")
+    spinfull_plotbands!(ax, N, p, μαs, Ez, points = points)
+    return fig
+end
+"""
+Now 1 → K↑, 2 → K'↑, 3 → K↓, 4 → K'↓.
+"""
+function spinfull_plotbands!(ax, N, p, μαs, Ez; points = 100)
+    ps =[Params_rhombohedral(p, μ = μαs[1], ξ = 1, Delta_Ez = Ez, Valley_asym = 0),
+        Params_rhombohedral(p, μ = μαs[2], ξ = -1, Delta_Ez = Ez, Valley_asym = 0),
+        Params_rhombohedral(p, μ = μαs[3], ξ = 1, Delta_Ez = Ez, Valley_asym = 0),
+        Params_rhombohedral(p, μ = μαs[4], ξ = -1, Delta_Ez = Ez, Valley_asym = 0)]
+
+    LMC.abcNplotbandsk(ax, N, points, ps[1]; ylims = [-1, 1])#, style = :solid)
+    LMC.abcNplotbandsk(ax, N, points, ps[2]; ylims = [-1, 1])#, style = :dash)
+    LMC.abcNplotbandsk(ax, N, points, ps[3]; ylims = [-1, 1])#, style = :solid)
+    LMC.abcNplotbandsk(ax, N, points, ps[4]; ylims = [-1, 1])#, style = :dash)
+end
+
+function spinfull_dos(N, ps, η, evals, μlist)
+    nps = [xxx_lmc_presets(N, ps[i]) for i in 1:length(ps)]
+    ω, j1 = c_dos(nps[1], μlist, η = η, evals = evals)
+    ω, j2 = c_dos(nps[2], μlist, η = η, evals = evals)
+    ω, j3 = c_dos(nps[3], μlist, η = η, evals = evals)
+    ω, j4 = c_dos(nps[4], μlist, η = η, evals = evals)
+    return ω, [j1,j2,j3,j4]
+end
+
+function plot_dos!(ax, ω, js)
+    colors = [:black, :black, :gray, :gray]
+    styles = [:solid, :dash, :solid, :dash]
+    labels = ["K↑", "K'↑", "K↓","K'↓"]
+    for (i,j) in enumerate(js)
+        lines!(ax, ω, j, color = colors[i], linestyle = styles[i], label = labels[i])
+    end
+    axislegend(ax)
+end

@@ -32,17 +32,15 @@ filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" *
 @load filestring * "/presets.jld" intp
 
 #ensure that there is always a root in findroot see Eμαs findzero
-hard_up_bound = maximum(int_n_mat[1].itp)
-hard_low_bound = minimum(int_n_mat[1].itp)
+hard_up_bound  = 3*maximum(int_n_mat[1].itp)
+hard_low_bound = 3*minimum(int_n_mat[1].itp)
 
-println("hard_up_bound: ", hard_up_bound)
-println("hard_low_bound: ", hard_low_bound)
-# if nu_min < hard_low_bound  
-#     nu_min = hard_low_bound
-# else nothing end
-# if nu_max> hard_up_bound
-#     nu_max = hard_up_bound
-# else nothing end
+if nu_min < hard_low_bound  
+    nu_min = hard_low_bound
+else nothing end
+if nu_max> hard_up_bound
+    nu_max = hard_up_bound
+else nothing end
 
 print("Building structs...")
 cpt = Computation_params(estimated_bound_width, evals, η, λ, iterations,
