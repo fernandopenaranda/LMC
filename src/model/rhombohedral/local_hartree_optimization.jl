@@ -16,16 +16,18 @@ function character(nαs; ϵ = 1e-3)
                 # logic_mat[i,j] = is_symmetric([mat[k][i,j] for k in 1:4])
                 n = [mat[k][i,j] for k in 1:4]
                 ch = is_quarter(n, ϵ = ϵ)
-                # if ch == 1 # half metal
-                #     vp_halfmetal = ifelse(abs(n[1]+n[3]-n[2]-n[4]) > ϵ, -1, 1) # this means that 
-                #     ch *= vp_halfmetal
-                # else nothing end
+                if ch == 1 # half metal
+                    vp_halfmetal = ifelse(abs(n[1]+n[3]-n[2]-n[4]) > ϵ, -1, 1) # this means that 
+                    ch *= vp_halfmetal
+                else nothing end
                 logic_mat[i,j] = ch
             end
         end
     return logic_mat
 
 end
+
+
 is_symmetric(ns; ϵ = 1e-4) = ifelse(sum([(n-mean(ns))^2 for n in ns]) < ϵ, 0, 1)
 
 is_quarter(ns; ϵ = 1e-4) = is_symmetric(ns; ϵ = ϵ) * ifelse( abs(ns[1]+ns[3]-ns[2]-ns[4]) < ϵ || abs(ns[1]+ns[4] - ns[2]-ns[3])< ϵ, 1, 2)
