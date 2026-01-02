@@ -5,14 +5,14 @@
         2) creates two merged files inside the PID folder with presets
         3) copies all relevant files to the home folder
 """
-function copy_merged_folder(folderPID)
+function postprocessing(folderPID)
     if pwd() != "/scratch/ferpe/LMC"
         throw(ArgumentError("run this in LMC folder in /scratch/folder"))
     else nothing end
     merged_filenames = data_merge(folderPID)
     # data files and presets
-    cp(merged_filenames[1], homedir() * "/Projects/LMC/" * basename(dirname(merged_filenames[1])) * "_" * basename(merged_filenames[1]) )
-    cp(merged_filenames[2], homedir() * "/Projects/LMC/" * basename(dirname(merged_filenames[2])) * "_" * basename(merged_filenames[2]) )
+    cp(merged_filenames[1], homedir() * "/Projects/LMC/" * basename(dirname(merged_filenames[1])) * "_" * basename(merged_filenames[1]); force=true )
+    cp(merged_filenames[2], homedir() * "/Projects/LMC/" * basename(dirname(merged_filenames[2])) * "_" * basename(merged_filenames[2]) ; force=true)
     # .txt files with all commands
     pathtofiles = glob("*.txt", pwd()) 
     for f in pathtofiles 
