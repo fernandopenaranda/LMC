@@ -17,10 +17,7 @@ which_observable = ARGS[8]  # Drude, LMC_orbital, LMC_spin, or QAH
 
 println("Importing interpolating data")
 
-using Pkg
-println(Pkg.status())
-
-using JLD2, CSV, DataFrames, Interpolations, LMC, Optics_in_the_length_gauge
+using JLD2, CSV, DataFrames, Interpolations, LMC, Optics_in_the_length_gauge, LinearAlgebra
 
 # import data from the hartree calculation and presets
 pd_filestring = pwd() * "/Data/PhaseDiagrams/" * string(phasediagPID) * "/" * string(job_id)
