@@ -8,7 +8,7 @@ quarter metal (quarter insulator)
 1 half_metal
 2 quarter
 """
-function character(nαs; ϵ = 1e-3)
+function character(nαs; ϵ = 0.4e-3)
     mat = reshape_densities(nαs)
     logic_mat = 1 .* ones(size(mat[1],1), size(mat[1],2))
         for i in 1:size(mat[1],1)
@@ -36,9 +36,12 @@ function reshape_densities(nαs)
     dim1 = length(nαs)
     dim2 = length(nαs[1])
     mats = [zeros(Float64, dim1, dim2) for i in 1:4]
+    println("dim1: ", dim1)
+    println("dim2: ", dim2)
+    println("nalphas[1]: ", size(nαs[1]))
     for k in 1:4
         for i in 1:dim1
-            for j in 1:dim2
+            for j in 1:dim2-1
                 mats[k][i,j] = nαs[i][j][k]
             end 
         end
