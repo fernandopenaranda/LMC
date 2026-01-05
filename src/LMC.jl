@@ -48,8 +48,6 @@ module LMC
     include(proj_folder * "/cluster/cluster_tools.jl")
     include(proj_folder * "/cluster/merged_data.jl")
 
-    
-
     export Params_rhombohedral, params_rhombohedral, xxx_lmc_presets, 
         lmc_presets, lmcshift_presets, lmcnoshift_presets, 
         xx_drude_presets, σxyahe_presets, qah_presets
@@ -69,4 +67,5 @@ module LMC
     export lmc_map, drude_map, ahe_map, map_eval, Ez_map_eval
     export script_path, slurm_submit_interpolations, slurm_submit_phasediagrams, slurm_submit_observable, data_merge, postprocessing
     export plot_phasediagrams, spinfull_plotbandsanddos, plot_cluster_bandsanddos
+    export plot_drude, plot_ahe, plot_lmc, plot_lmcspin
 end

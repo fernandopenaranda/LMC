@@ -8,16 +8,16 @@ quarter metal (quarter insulator)
 1 half_metal
 2 quarter
 """
-function character(nαs; ϵ = 0.4e-3)
+function character(nαs; ϵ1 = 4e-4,  ϵ2 = 1e-3)
     mat = reshape_densities(nαs)
     logic_mat = 1 .* ones(size(mat[1],1), size(mat[1],2))
         for i in 1:size(mat[1],1)
             for j in 1:size(mat[1],2)
                 # logic_mat[i,j] = is_symmetric([mat[k][i,j] for k in 1:4])
                 n = [mat[k][i,j] for k in 1:4]
-                ch = is_quarter(n, ϵ = ϵ)
+                ch = is_quarter(n, ϵ1 = ϵ1, ϵ2 = ϵ2)
                 if ch == 1 # half metal
-                    vp_halfmetal = ifelse(abs(n[1]+n[3]-n[2]-n[4]) > ϵ, -1, 1) # this means that 
+                    vp_halfmetal = ifelse(abs(n[1]+n[3]-n[2]-n[4]) > ϵ2, -1, 1) # this means that 
                     ch *= vp_halfmetal
                 else nothing end
                 logic_mat[i,j] = ch
@@ -30,7 +30,9 @@ end
 
 is_symmetric(ns; ϵ = 1e-4) = ifelse(sum([(n-mean(ns))^2 for n in ns]) < ϵ, 0, 1)
 
-is_quarter(ns; ϵ = 1e-4) = is_symmetric(ns; ϵ = ϵ) * ifelse( abs(ns[1]+ns[3]-ns[2]-ns[4]) < ϵ || abs(ns[1]+ns[4] - ns[2]-ns[3])< ϵ, 1, 2)
+is_quarter(ns; ϵ1 = 1e-6, ϵ2 = 1e-4) = is_symmetric(ns; ϵ = ϵ1) * 
+    ifelse( abs(ns[1]+ns[3]-ns[2]-ns[4]) < ϵ2 || abs(ns[1]+ns[4] - ns[2]-ns[3])< ϵ2 || 
+        abs(ns[1]+ns[2] -ns[3]-ns[4])< ϵ2, 1, 2)
 
 function reshape_densities(nαs)
     dim1 = length(nαs)
@@ -48,6 +50,7 @@ function reshape_densities(nαs)
     end
     return mats
 end
+
 
 """
 generate interpolated dos and ns as a function of Ez.
@@ -445,3 +448,4 @@ end
 
 v_su2(U, J, n, μαs) = v_su4(U, J, n, μαs) + 
     J * abs(n(μαs[1])-n(μαs[3])) * abs(n(μαs[2])-n(μαs[4]))
+

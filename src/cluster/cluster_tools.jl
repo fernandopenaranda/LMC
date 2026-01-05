@@ -14,9 +14,13 @@ function slurm_submit_interpolations(;Ezmin = -6, Ezmax = 6,
     cmd = `sbatch --wait $script $lmcfolder $Ezmin $Ezmax $evals $N $eta $phs`
     dryrun && return cmd
     run(cmd)
+    # Capture stdout
+    output = read(cmd, String)
+    # Example output: "Submitted batch job 3228119\n"
+    jobid = parse(Int, split(output)[end])
+    return jobid
 end
  
-
 """ computes the mus and alphas for the 4 spin/valley flavours
 selecting the energetically favored ground state in the presense
 of a local Hartree interaction of the form `int_model =:SU2 or :SU4`
@@ -38,6 +42,12 @@ function slurm_submit_phasediagrams(interpolationsPID::Union{String,Number};
     cmd = `sbatch --wait $script $lmcfolder $interpolationsPID $Ezsteps $nu_min $nu_max $nu_points $U $J $lambda $eta $estimated_bound_width $iterations $int_mode $random_guesses $evals`
     dryrun && return cmd
     run(cmd)
+
+    # Capture stdout
+    output = read(cmd, String)
+    # Example output: "Submitted batch job 3228119\n"
+    jobid = parse(Int, split(output)[end])
+    return jobid
 end
 
 """using the results of the Hartree algorithm it computes a given observable 
@@ -49,4 +59,9 @@ function slurm_submit_observable(phasediagramPID::Union{String,Number};
     cmd = `sbatch --wait $script $lmcfolder $phasediagramPID $evals $T $tau $which_observable`
     dryrun && return cmd
     run(cmd)
+    # Capture stdout
+    output = read(cmd, String)
+    # Example output: "Submitted batch job 3228119\n"
+    jobid = parse(Int, split(output)[end])
+    return jobid
 end
