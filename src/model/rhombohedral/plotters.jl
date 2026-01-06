@@ -328,8 +328,32 @@ end
 """ 
 the spin degeneracy is lifted by the hunds coupling that makes, however
 valley degeneracy is still present. One can choose among the different filling
-orderings in the valley. This will result in different hall conductivities"""
-function reorder_valleys(pdpath, pdpresetpath)
+orderings in the valley. This will result in different hall conductivities. QM and 3QM 
+in the presence of Hunds coupling, necessarily have different spin orientations.
+Whereas qah may or may not distinguish QM from 3QM phases as in the presence of 
+Hunds coupling its sign depends on the arbitrary occupation of the valleys (non constricted)
+the spin_lmc is sensitive to spin and thus to QM and 3QM always. 
+"""
+
+reorder_valleys(pdpath, pdpresetpath) = reorder_observable(pdpath, pdpresetpath, v_filling_order)
+
+
+""" 
+the filling sequence compatible with reorder_valleys is:
+∅ -> K↓ -> K↓K'↓ (Hund) ->  K↓K'↓K↑ -> K↓K'↓K↑K'↑ ≡ □ ->
+     □ + K'↓ (valley arbitrary spin fixed) -> □ + K'↓K↓ (Hund) 
+     -> □ + K'↓K↓ K'↑ (arbitrary) -> □ + □ 
+
+another alternative also compatible will be     
+    ∅ -> K↓ -> K↓K'↓ (Hund) ->  K↓K'↓K'↑ -> K↓K'↓K↑K'↑ ≡ □ ->
+□ + K'↓ (valley arbitrary spin fixed) -> □ + K'↓K↓ (Hund) 
+-> □ + K'↓K↓ K↑ (arbitrary) -> □ + □ 
+here the qah changes but in both the spinlmc is the same
+
+"""
+reorder_spins(pdpath, pdpresetpath) = reorder_observable(pdpath, pdpresetpath, spin_filling_order)
+
+function reorder_observable(pdpath, pdpresetpath, func)
     ppd = load(pdpresetpath)
     pddata = load(pdpath)
     vals = ppd["presets"]
@@ -350,7 +374,7 @@ function reorder_valleys(pdpath, pdpresetpath)
     qah_sign_mat = zeros(Float64, dim1, dim2)
     for i in 1:dim1
         for j in 1:dim2-1
-            qah_sign_mat[i,j] = v_filling_order(sorted_nss[i][j])
+            qah_sign_mat[i,j] = func(sorted_nss[i][j])
         end
     end
     return qah_sign_mat
@@ -360,9 +384,13 @@ end
 then the K' of arbitrary spin if negative or and the opposite for possitive
 fillings, this is completely arbitrary, the same sign could be observed
 everywhere """
-function v_filling_order(ns)
-    ifelse(sum(ns) >0, 1, -1)
-end
+v_filling_order(ns) = ifelse(sum(ns) > 0, 1, -1)
+
+spin_filling_order(ns) = 
+
+
+
+  
 
 
 function reshape_observables(obs)
