@@ -5,10 +5,10 @@
 logical function that tells us if the system is symmetric, half metal (half insulator), or
 quarter metal (quarter insulator)
 0 symmetric
-1 half_metal
-2 quarter
+1 half_metal 
+2 quarter ϵ1 = 4e-4,  ϵ2 = 1e-3
 """
-function character(nαs; ϵ1 = 4e-4,  ϵ2 = 1e-3)
+function character(nαs; ϵ1 = 1e-6,  ϵ2 = 1e-3)
     mat = reshape_densities(nαs)
     logic_mat = 1 .* ones(size(mat[1],1), size(mat[1],2))
         for i in 1:size(mat[1],1)
@@ -118,8 +118,9 @@ Crucially the dos and the occupation are independent of μ and thus are interpol
 before calling to the optimizer (highly efficient).
 The system in degenerate in spin but not in valley, however the total energy and filling is
 degenerate in valley too.
-The type of potential SU4 or SU2 (hunds coupling) is selected by int_model
+The type of potential SU4 or SU2 (ferromagnetic Hunds coupling) is selected by int_model
 I introduce a filling and one Ez
+see: https://doi.org/10.1038/s41586-021-03938-w
 """
 
 Emin_nαs(int_dos_mat::ScaledInterpolation, n_mat::ScaledInterpolation, 
@@ -230,7 +231,6 @@ function Emin_μαs(int_dos::ScaledInterpolation, n::Union{ScaledInterpolation,F
     # println("minimal μαs: ", μα_mat[ind])
     return μα_mat[ind]
 end
-
 
 function Emin_μαs(p::Planar_σijk_presets_orbital, μ0s::Array, μ::Number;
         U = 0, J = 0, λ = 0, evals = 1e2, η = 0.05, 
@@ -400,8 +400,6 @@ function interpolated_n(int_dos, μlist::AbstractRange)
     itp = interpolate(ns, BSpline(Linear()))
     return Interpolations.scale(itp, μlist)
 end
-
-
 
 #_________________________________________________________________________________________
 # Minimize the grand functional. Only T = 0 codepath XCommmented T ≠ 0

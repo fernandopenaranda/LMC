@@ -67,7 +67,7 @@ function xx_drude_presets(N, p::Params_rhombohedral;
     cpt = Transport_computation_presets(xbounds, ybounds, evals)
     # planar preset object (argument of 
     # `Optics_in_the_length_gauge.linear_magneto_conductivity_orbital`)
-    return Drude_presets(a0, :x,:x, h, dhx, T, 
+    return Drude_presets(a0, :x, :x, h, dhx, T, 
         τ*unit_convention_two_packages_t, cpt)
 end
 
@@ -128,7 +128,6 @@ k_Omegain(p::Planar_σijk_presets_orbital, q) = Optics_in_the_length_gauge.k_Ωi
 k_Omegaz(p::Planar_σijk_presets_orbital, q) = Optics_in_the_length_gauge.k_Ωxy_fn(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
 """kresolved omm"""
 k_d_OMM(p::Planar_σijk_presets_orbital, q) = Optics_in_the_length_gauge.k_d_OMM_fs(p.dirJ, p.dirE, p.h, p.nabla_h, p.rz, q, p.T)
-
 
 #____________________________________________________________________________________________
 

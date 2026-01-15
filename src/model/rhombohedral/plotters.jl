@@ -1,81 +1,80 @@
 
 
-function LMC.abcplotbandsk(kpoints, p; ylims = [-1, 1], res = (500, 550))
+function LMC.abcplotbandsk(kpoints, p; ylims = [-1, 1], res = (500, 550), linestyle = :solid)
     fig = Figure(size = res)
-    LMC.abcplotbands!(fig, real.(abck_bands(kpoints, p)), kpoints, ylimits = ylims, color = :black)
+    LMC.abcplotbands!(fig, real.(abck_bands(kpoints, p)), kpoints, ylimits = ylims, color = :black, linestyle = linestyle)
     fig
 end
 
-function LMC.abcplotbandsk(fig::Figure, kpoints, p; ylims = [-1, 1], res = (500, 550))
-    LMC.abcplotbands!(fig, real.(abck_bands(kpoints, p)), kpoints, ylimits = ylims, color = :orange)
+function LMC.abcplotbandsk(fig::Figure, kpoints, p; ylims = [-1, 1], res = (500, 550), linestyle = :solid)
+    LMC.abcplotbands!(fig, real.(abck_bands(kpoints, p)), kpoints, ylimits = ylims, color = :orange, linestyle = linestyle)
     fig
 end
 
-function LMC.abcplotbandsk(ax::Axis, kpoints, p; ylims = [-1, 1], res = (500, 550), color = :black)
-    LMC.abcplotbands!(ax, real.(abck_bands(kpoints, p)), ylimits = ylims, color = color)
+function LMC.abcplotbandsk(ax::Axis, kpoints, p; ylims = [-1, 1], res = (500, 550), color = :black, linestyle = :solid)
+    LMC.abcplotbands!(ax, real.(abck_bands(kpoints, p)), ylimits = ylims, color = color, linestyle = linestyle)
 end
 
 
-function LMC.abcNplotbandsk(N, kpoints, p; ylims = [-1, 1], res = (500, 550))
+function LMC.abcNplotbandsk(N, kpoints, p; ylims = [-1, 1], res = (500, 550), linestyle = :solid)
     fig = Figure(size = res)
-    LMC.abcplotbands!(fig, real.(abck_Nbands(N, kpoints, p)), kpoints, ylimits = ylims, color = :black)
+    LMC.abcplotbands!(fig, real.(abck_Nbands(N, kpoints, p)), kpoints, ylimits = ylims, color = :black, linestyle = linestyle)
     fig
 end
 
-function LMC.abcNplotbandsk(N, kpoints, p, n; ylims = [-1, 1], res = (500, 550))
+function LMC.abcNplotbandsk(N, kpoints, p, n; ylims = [-1, 1], res = (500, 550), linestyle = :solid)
     fig = Figure(size = res)
-    LMC.abcplotbands!(fig, n, real.(abck_Nbands(N, kpoints, p)), kpoints, ylimits = ylims, color = :black)
+    LMC.abcplotbands!(fig, n, real.(abck_Nbands(N, kpoints, p)), kpoints, ylimits = ylims, color = :black, linestyle = linestyle)
     fig
 end
 
-function LMC.abcNplotbandsk(fig::Figure, N, kpoints, p; ylims = [-1, 1], res = (500, 550))
-    LMC.abcplotbands!(fig, real.(abck_Nbands(N, kpoints, p)), kpoints, ylimits = ylims, color = :orange)
+function LMC.abcNplotbandsk(fig::Figure, N, kpoints, p; ylims = [-1, 1], res = (500, 550), linestyle = :solid)
+    LMC.abcplotbands!(fig, real.(abck_Nbands(N, kpoints, p)), kpoints, ylimits = ylims, color = :orange, linestyle = linestyle)
     fig
 end
 
-function LMC.abcNplotbandsk(ax::Axis, N, kpoints, p; ylims = [-1, 1], res = (500, 550), color = :black)
-    LMC.abcplotbands!(ax, real.(abck_Nbands(N, kpoints, p)), ylimits = ylims, color = color)
+function LMC.abcNplotbandsk(ax::Axis, N, kpoints, p; ylims = [-1, 1], res = (500, 550), color = :black, linestyle = :solid)
+    LMC.abcplotbands!(ax, real.(abck_Nbands(N, kpoints, p)), ylimits = ylims, color = color, linestyle = linestyle)
 end
 
 LMC.abcplotbandsk(mat::Array, nk; kw...) = LMC.abcplotbands!(Figure(size = (500, 550)), real.(mat), nk; kw...)
 
-function LMC.abcplotbands!(f::Figure, mat, nk; dots = false, color = missing, ylimits = missing, xlimits = missing)
+function LMC.abcplotbands!(f::Figure, mat, nk; dots = false, color = missing, ylimits = missing, xlimits = missing, linestyle = :solid)
     ax = Axis(f[1, 1]; xlabel = "k", ylabel = "E [meV]", xlabelsize= 27, ylabelsize= 27, xticklabelsize = 27, yticklabelsize = 27)
     xarr = collect(1:size(mat,2))
     num_points = size(mat,2)
         for i in 1:size(mat, 1)
-            lines!(ax, xarr , (mat[i,:]), color = ifelse(isa(color,Missing), :lightgray, color))
+            lines!(ax, xarr , (mat[i,:]), color = ifelse(isa(color,Missing), :lightgray, color), linestyle = linestyle)
         end
  
     ylims!(ax, -0.04*390,0.04*390)
-    ax.xticks = ([nk], ["K_ξ"])
+    ax.xticks = ([nk], [L"$K_ξ$"])
     return f
 end
 
-
-function LMC.abcplotbands!(f::Figure, n, mat, nk; dots = false, color = missing, ylimits = missing, xlimits = missing)
+function LMC.abcplotbands!(f::Figure, n, mat, nk; dots = false, color = missing, ylimits = missing, xlimits = missing, linestyle = :solid)
     ax = Axis(f[1, 1]; xlabel = "k", ylabel = "E [meV]", title = "ν = $(sum(n))", xlabelsize= 27, ylabelsize= 27, xticklabelsize = 27, yticklabelsize = 27)
     xarr = collect(1:size(mat,2))
     num_points = size(mat,2)
         for i in 1:size(mat, 1)
-            lines!(ax, xarr , (mat[i,:]), color = ifelse(isa(color,Missing), :lightgray, color))
+            lines!(ax, xarr , (mat[i,:]), color = ifelse(isa(color,Missing), :lightgray, color),linestyle = linestyle)
         end
  
     ylims!(ax, -0.04*390,0.04*390)
-    ax.xticks = ([nk], ["K_ξ"])
+    ax.xticks = ([nk], [L"$K_ξ$"])
     return f
 end
 
-function LMC.abcplotbands!(ax::Axis, mat; dots = false, color = :black, ylimits = missing, xlimits = missing)
+function LMC.abcplotbands!(ax::Axis, mat; dots = false, color = :black, ylimits = missing, xlimits = missing, linestyle = :solid)
     xarr = collect(1:size(mat,2))
     num_points = size(mat,2)
     count = 0
         for i in 1:size(mat, 1)
-            lines!(ax, xarr , (mat[i,:]), color = color)
+            lines!(ax, xarr , (mat[i,:]), color = color, linestyle = linestyle)
             count +=1
         end
     ylims!(ax, -0.05*390,0.05*390)
-    ax.xticks = ([div(length(xarr),2)], ["K_ξ"])
+    ax.xticks = ([div(length(xarr),2)], [L"$K_ξ$"])
 end
 #_______________________________________________________________________________________
 """ computes and plot bands givern a vector of Params_rhombohedral presets """
@@ -311,9 +310,11 @@ function plot_obs(pdpath, pdpresetpath, func; kws...)
     if func == LMC.plot_ahe || func == LMC.plot_lmc
         valley_ordering = reorder_valleys(pdpath, pdpresetpath)
         matt = abs.(mat) .* valley_ordering
-    elseif func == LMC.plot_drude || func == LMC.plot_lmcspin
-                valley_ordering = ones(size(mat,1), size(mat,2))
+    elseif func == LMC.plot_drude #|| 
         matt = mat
+    elseif func == LMC.plot_lmcspin
+        valley_ordering = reorder_spins(pdpath, pdpresetpath)
+        matt = abs.(mat) .* valley_ordering
     end
     func(PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt; kws...)
 end
@@ -386,12 +387,36 @@ fillings, this is completely arbitrary, the same sign could be observed
 everywhere """
 v_filling_order(ns) = ifelse(sum(ns) > 0, 1, -1)
 
-spin_filling_order(ns) = 
+function spin_filling_order(ns) 
+    ind = most_different_median(ns)
+    if is_smallest_abs(ns[ind],ns)
+        1 * sign(sum(ns))
+    else 
+        -1 * sign(sum(ns))
+    end
+end
+
+function is_smallest_abs(x, a::AbstractVector)
+    abs(x) == minimum(abs, a)
+end
 
 
-
+function most_different_median(x)
+    @assert length(x) == 4
+    m = median_array(x)
+    return argmax(abs.(x .- m))
+end
   
-
+function median_array(x::AbstractVector)
+    n = length(x)
+    @assert n > 0 "median of empty array is undefined"
+    y = sort(x)
+    if isodd(n)
+        return y[(n + 1) ÷ 2]
+    else
+        return (y[n ÷ 2] + y[n ÷ 2 + 1]) / 2
+    end
+end
 
 function reshape_observables(obs)
     dim1 = length(obs)

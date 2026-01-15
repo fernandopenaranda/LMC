@@ -610,7 +610,7 @@ version = "0.5.6+0"
 
 [[deps.Optics_in_the_length_gauge]]
 deps = ["Arpack", "Cubature", "Dierckx", "Distributed", "LinearAlgebra", "Parameters", "PhysicalConstants", "ProgressMeter", "SparseArrays", "StaticArrays", "Unitful"]
-git-tree-sha1 = "c96180639eea28a69eb64139a1ef27507f168c43"
+git-tree-sha1 = "0a960d951c2ca261e4d419250f2b07829629dc68"
 repo-rev = "main"
 repo-url = "https://github.com/fernandopenaranda/Optics_in_the_length_gauge"
 uuid = "0ea70cc5-a76f-4e09-b9f9-a74b5f0b413f"

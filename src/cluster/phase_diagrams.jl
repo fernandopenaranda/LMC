@@ -34,7 +34,6 @@ filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" *
 #ensure that there is always a root in findroot see Eμαs findzero
 hard_up_bound  = 3*maximum(int_n_mat[1].itp)
 hard_low_bound = 3*minimum(int_n_mat[1].itp)
-
 if nu_min < hard_low_bound  
     nu_min = hard_low_bound
 else nothing end
