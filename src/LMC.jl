@@ -33,6 +33,7 @@ module LMC
 
     const proj_folder = normpath(joinpath(@__DIR__, "..")) * "src"
     const rhomb_folder = proj_folder * "/model/rhombohedral/"
+    const tbg_folder = proj_folder * "/model/tbg/"
     const common_folder = proj_folder * "/comfunctions/"
     const figures_folder = proj_folder * "/Paper/Figures/"
 
@@ -45,6 +46,15 @@ module LMC
     include(rhomb_folder * "spontaneous_sym_breakingmodels.jl")
     include(rhomb_folder * "local_hartree_optimization.jl")
     include(rhomb_folder * "observable_maps.jl")
+
+    include(tbg_folder * "hf_presets.jl")
+    include(tbg_folder * "hf_model.jl")
+    include(tbg_folder * "hf_velocities.jl")
+    include(tbg_folder * "rz_operator_ansatz.jl")
+    include(tbg_folder * "optic_maps_correlated.jl")
+    include(tbg_folder * "wrapper_lmc.jl")
+    include(tbg_folder * "read_atlas.jl")
+    
     include(common_folder * "separate_contributions.jl")
     include(proj_folder * "/cluster/cluster_tools.jl")
     include(proj_folder * "/cluster/merged_data.jl")
@@ -68,5 +78,7 @@ module LMC
     export lmc_map, drude_map, ahe_map, map_eval, Ez_map_eval
     export script_path, slurm_submit_interpolations, slurm_submit_phasediagrams, slurm_submit_observable, data_merge, postprocessing
     export plot_phasediagrams, spinfull_plotbandsanddos, plot_cluster_bandsanddos
-    export plot_drude, plot_ahe, plot_lmc, plot_lmcspin
+    export plot_drude, plot_ahe, plot_lmc, plot_lmcspin, aux_plot_obs
+    export hf_valley_spin_hamiltonian, dhf_hamiltonian, rz, int_boundaries, paramsHF, ParamsHF
+    export lmc_spin_sweep, lmc_orb_sweep, Self_consistent_data, drude_sweep
 end

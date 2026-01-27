@@ -1,3 +1,7 @@
 src/Paper/ClusterDATA
-src/Paper/DATA
+src/Paper/DATA/*
 src/Paper/Figures
+src/Paper/Figure_2
+# src/Paper/*
+!src/Paper/ClusterTBG/
+src/Paper/ClusterTBG/2281278/*/

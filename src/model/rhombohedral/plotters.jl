@@ -133,37 +133,66 @@ function LMC.plotmap!(ax, kx, ky, Zs; colmap = missing, colrange = missing)
         cmap = cgrad(colmap) 
     end
     if isa(colrange, Missing)
-        hm = heatmap!(ax, kx, ky, real(Zs), rasterize = true)#, colormap = cgrad([:red,:black]))
+        hm = heatmap!(ax, kx, ky, real(Zs), rasterize = true, dpi = 500)#, colormap = cgrad([:red,:black]))
     else
-        hm = heatmap!(ax, kx, ky, real(Zs), colormap = cmap, colorrange= colrange, rasterize = true)
+        hm = heatmap!(ax, kx, ky, real(Zs), colormap = cmap, colorrange= colrange, rasterize = true,dpi = 500)
     end
     return hm
     # cb = Colorbar(fig[1, 2], hm)
 end
 
 function LMC.plot_characters(N, U, J, Ezlist, νlist, ns)
-    characters = character(ns)
-    xvect = νlist
     fig = Figure(size = (600,600))
     ax= Axis(fig[1,1], ylabel = "D [meV]", xlabel = "ν", title = "Phase diagram: N = $(N), U = $(U), J = $(J)")
-
-    scatter!(ax, [100], [100], color = :gray, label = "Symmetric", marker = :rect, markersize = 20)
-    scatter!(ax, [100], [100], color = :blue, label = "SPHM/SPHI", marker = :rect, markersize = 20)
-    scatter!(ax, [100], [100], color = :purple, label = "VPHM/SPHI", marker = :rect, markersize = 20)
-    scatter!(ax, [100], [100], color = :lightblue, label = "QM/QI", marker = :rect, markersize = 20)
-    xlims!(ax, xvect[1], xvect[end])
-    ylims!(ax, Ezlist[1], Ezlist[end])
-    axislegend(ax, position = :ct, orientation = :horizontal, labelsize = 13,
-    titlesize = 13,
-    padding = (4, 4, 4, 4),
-    patchsize = (12, 12))
-    levels = [-1, 0, 1, 2]
-    colors = [:purple, :gray, :blue, :lightblue]
-    hm =  heatmap!(ax,  xvect, Ezlist, characters', colormap = colors, levels = levels, colorrange = [-1,2], rasterize = true)#, rasterize = true)
+    LMC.plot_characters(ax, N, U, J, Ezlist, νlist, ns)
     return fig
 end
 
-function LMC.plot_phasediagrams(pdpath, pdpresetpath)
+function LMC.plot_characters(ax, N, U, J, Ezlist, νlist, ns; axisleg = true, colorlist = missing)
+    characters = character(ns)
+    xvect = νlist ./ 1e12
+    if axisleg == true
+        scatter!(ax, [100], [100], color = :gray, label = "Symmetric", marker = :rect, markersize = 20)
+        scatter!(ax, [100], [100], color = :blue, label = "SPHM/SPHI", marker = :rect, markersize = 20)
+        scatter!(ax, [100], [100], color = :purple, label = "VPHM/SPHI", marker = :rect, markersize = 20)
+        scatter!(ax, [100], [100], color = :lightblue, label = "QM/QI", marker = :rect, markersize = 20)
+        axislegend(ax, position = :ct, orientation = :horizontal, labelsize = 13,
+        titlesize = 13, padding = (4, 4, 4, 4), patchsize = (12, 12))
+    else nothing end
+    xlims!(ax, xvect[1], xvect[end])
+    ylims!(ax, Ezlist[1], Ezlist[end])
+
+    levels = [-1, 0, 1, 2]
+    if isa(colorlist,Missing) == true
+    colors = [:purple, :gray, :blue, :lightblue]
+    else colors = colorlist end
+    hm =  heatmap!(ax,  xvect, Ezlist, characters', colormap = colors, levels = levels, colorrange = [-1,2], rasterize = true,dpi = 500)#, rasterize = true)
+end
+
+function prefactor_filling() # in cm^-2
+    p = Params_rhombohedral(1, 0, 3160, 390,-20, 315, 0*44, 2, 0)
+    cnst = p.γ1/(p.γ0 * √3/2)
+    Δx = [-cnst, cnst]   # this is a ratio of energies, convention independent
+    Δy = [-cnst, cnst] # the areas are unitless
+    A_BZ = 8π^2/√3
+    A_small = ((Δx[2]-Δx[1])*(Δy[2]-Δy[1]))
+    # val = A_small/A_BZ * 8π^2/(√3*2.46^2*1e-8^2)/(4π^2) # filling prefactor
+    val = A_small/A_BZ / ((2.46*1e-8)^2) # filling prefactor
+    return val
+end
+
+
+function LMC.plot_phasediagrams(pdpath::String, pdpresetpath::String)
+    Ezs, νlist, nss, sorted_inds, pdpresets = loadandreshape_cluster_data(pdpath, pdpresetpath)
+    plot_characters(pdpresets.N, pdpresets.U, pdpresets.J, Ezs[sorted_inds], prefactor_filling() .* νlist, nss[sorted_inds])
+end
+
+function LMC.plot_phasediagrams(ax, pdpath, pdpresetpath; colorlist = missing, axisleg = false)
+    Ezs, νlist, nss, sorted_inds, pdpresets = loadandreshape_cluster_data(pdpath, pdpresetpath)
+    plot_characters(ax, pdpresets.N, pdpresets.U, pdpresets.J, Ezs[sorted_inds], prefactor_filling() .* νlist, nss[sorted_inds], axisleg = axisleg, colorlist = colorlist)
+end
+
+function loadandreshape_cluster_data(pdpath, pdpresetpath)
     ppd = load(pdpresetpath)
     pddata = load(pdpath)
     vals, vals2 = ppd["presets"]
@@ -180,10 +209,10 @@ function LMC.plot_phasediagrams(pdpath, pdpresetpath)
     end
     sorted_inds = sortperm(Ezs)
     νlist = first_value["nu_list"]
-    plot_characters(pdpresets.N, pdpresets.U, pdpresets.J, Ezs[sorted_inds], νlist, nss[sorted_inds])
+    return Ezs, νlist, nss, sorted_inds, pdpresets
 end
 
-function LMC.plot_cluster_bandsanddos(pdpath, pdpresetpath, Ezval, νval)
+function LMC.plot_cluster_bandsanddos(pdpath, pdpresetpath, Ezval, νval; kws...)
     ppd = load(pdpresetpath)
     pddata = load(pdpath)
     vals, vals2 = ppd["presets"]
@@ -202,7 +231,7 @@ function LMC.plot_cluster_bandsanddos(pdpath, pdpresetpath, Ezval, νval)
     νlist = first_value["nu_list"]
     idxnu = argmin(abs.(νlist .- νval))
     idxEz = argmin(abs.(Ezs .- Ezval))
-    spinfull_plotbandsanddos(pdpresets.N, pdpresets.p, νlist[idxnu], muss[idxEz][idxnu], Ezs[idxEz], collect(-10:0.1:10); points = 100, evals = 5e3, η = 0.1)
+    spinfull_plotbandsanddos(pdpresets.N, pdpresets.p, νlist[idxnu], muss[idxEz][idxnu], Ezs[idxEz], collect(-10:0.1:10); kws...)
 end
 
 function LMC.spinfull_plotbandsanddos(N, p, nαs, μαs, Ez, μlist; points = 100, evals = 100, η = 0.05)
@@ -274,6 +303,8 @@ end
 LMC.plot_drude(pdpath, pdpresetpath; kws...) = 
     plot_obs(pdpath, pdpresetpath, LMC.plot_drude; kws...)
 
+LMC.plot_drude(ax, pdpath, pdpresetpath; kws...) = 
+    plot_obs(ax, pdpath, pdpresetpath, LMC.plot_drude; kws...)
 
 LMC.plot_ahe(pdpath, pdpresetpath; kws...) = 
     plot_obs(pdpath, pdpresetpath, LMC.plot_ahe; kws...)
@@ -285,8 +316,28 @@ LMC.plot_lmcspin(pdpath, pdpresetpath; kws...) =
     plot_obs(pdpath, pdpresetpath, LMC.plot_lmcspin; kws...)
 
 
+LMC.plot_ahe(ax, pdpath, pdpresetpath; kws...) = 
+    plot_obs(ax, pdpath, pdpresetpath, LMC.plot_ahe; kws...)
+
+LMC.plot_lmc(ax, pdpath, pdpresetpath; kws...) = 
+    plot_obs(ax, pdpath, pdpresetpath, LMC.plot_lmc; kws...)
+
+LMC.plot_lmcspin(ax, pdpath, pdpresetpath; kws...) = 
+    plot_obs(ax, pdpath, pdpresetpath, LMC.plot_lmcspin; kws...)
+
+
 
 function plot_obs(pdpath, pdpresetpath, func; kws...)
+    PID, pdPID, interpPID, evals, Ezs, νlist, matt = aux_plot_obs(pdpath, pdpresetpath, func)
+    func(PID, pdPID, interpPID, evals, Ezs, prefactor_filling()/ 1e12 .* νlist, matt; kws...)
+end
+
+function plot_obs(ax, pdpath, pdpresetpath, func; flavor_filling = missing , kws...)
+    PID, pdPID, interpPID, evals, Ezs, νlist, matt = aux_plot_obs(pdpath, pdpresetpath, func, flavor_filling = flavor_filling)
+    func(ax, PID, pdPID, interpPID, evals, Ezs, prefactor_filling()/1e12 .* νlist, matt; kws...)
+end
+
+function aux_plot_obs(pdpath, pdpresetpath, func; flavor_filling = missing)
     ppd = load(pdpresetpath)
     pddata = load(pdpath)
     vals = ppd["presets"]
@@ -308,16 +359,17 @@ function plot_obs(pdpath, pdpresetpath, func; kws...)
     νlist = first_value["nu_list"]
     mat = reshape_observables(obsmat[sorted_inds])
     if func == LMC.plot_ahe || func == LMC.plot_lmc
-        valley_ordering = reorder_valleys(pdpath, pdpresetpath)
+        valley_ordering = reorder_valleys(pdpath, pdpresetpath, flavor_filling)
         matt = abs.(mat) .* valley_ordering
     elseif func == LMC.plot_drude #|| 
-        matt = mat
+        matt = abs.(mat)
     elseif func == LMC.plot_lmcspin
-        valley_ordering = reorder_spins(pdpath, pdpresetpath)
+        valley_ordering = reorder_spins(pdpath, pdpresetpath, flavor_filling)
         matt = abs.(mat) .* valley_ordering
     end
-    func(PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt; kws...)
+    return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt
 end
+
 
 
 #_______________________________________________________________________________________
@@ -336,7 +388,8 @@ Hunds coupling its sign depends on the arbitrary occupation of the valleys (non 
 the spin_lmc is sensitive to spin and thus to QM and 3QM always. 
 """
 
-reorder_valleys(pdpath, pdpresetpath) = reorder_observable(pdpath, pdpresetpath, v_filling_order)
+reorder_valleys(pdpath, pdpresetpath, flavor_filling) = 
+    reorder_observable(pdpath, pdpresetpath, v_filling_order, flavor_filling)
 
 
 """ 
@@ -352,9 +405,10 @@ another alternative also compatible will be
 here the qah changes but in both the spinlmc is the same
 
 """
-reorder_spins(pdpath, pdpresetpath) = reorder_observable(pdpath, pdpresetpath, spin_filling_order)
+reorder_spins(pdpath, pdpresetpath, flavor_filling) = 
+    reorder_observable(pdpath, pdpresetpath, spin_filling_order, flavor_filling)
 
-function reorder_observable(pdpath, pdpresetpath, func)
+function reorder_observable(pdpath, pdpresetpath, func, flavor_filling)
     ppd = load(pdpresetpath)
     pddata = load(pdpath)
     vals = ppd["presets"]
@@ -375,7 +429,7 @@ function reorder_observable(pdpath, pdpresetpath, func)
     qah_sign_mat = zeros(Float64, dim1, dim2)
     for i in 1:dim1
         for j in 1:dim2-1
-            qah_sign_mat[i,j] = func(sorted_nss[i][j])
+            qah_sign_mat[i,j] = func(sorted_nss[i][j], flavor_filling)
         end
     end
     return qah_sign_mat
@@ -385,14 +439,34 @@ end
 then the K' of arbitrary spin if negative or and the opposite for possitive
 fillings, this is completely arbitrary, the same sign could be observed
 everywhere """
-v_filling_order(ns) = ifelse(sum(ns) > 0, 1, -1)
-
-function spin_filling_order(ns) 
-    ind = most_different_median(ns)
-    if is_smallest_abs(ns[ind],ns)
-        1 * sign(sum(ns))
+function v_filling_order(ns, flavor_filling)
+    if flavor_filling == 1
+        ifelse(sum(ns) > 0, 1, -1)
     else 
-        -1 * sign(sum(ns))
+        ind = most_different_median(ns)
+        if is_smallest_abs(ns[ind],ns)
+            1 * sign(sum(ns))
+        else 
+            -1 * sign(sum(ns))
+        end
+    end
+end
+
+function spin_filling_order(ns, flavor_filling) 
+    if flavor_filling == 1
+        ind = most_different_median(ns)
+        if is_smallest_abs(ns[ind],ns)
+            -1 * sign(sum(ns))
+        else 
+            1 * sign(sum(ns))
+        end
+    else 
+        ind = most_different_median(ns)
+        if is_smallest_abs(ns[ind],ns)
+            1 * sign(sum(ns))
+        else 
+            -1 * sign(sum(ns))
+        end
     end
 end
 
@@ -437,11 +511,23 @@ LMC.plot_lmc(PID::String, pdPID, interpPID, evals, Ezlist, νlist, mat; kws...) 
 LMC.plot_lmc(N::Number, U, J, Ezlist, νlist, mat; kws...) = 
     plot_mat(N, U, J, Ezlist, νlist, mat, "LMC", "σxxx [1/T*e²/h]"; kws...)
 
+LMC.plot_lmc(ax, PID::String, pdPID, interpPID, evals, Ezlist, νlist, mat; kws...) = 
+plot_mat(ax, PID, pdPID, interpPID, evals, Ezlist, νlist, mat, "LMC", "σxxx [1/T*e²/h]"; kws...)
+
+LMC.plot_lmc(ax, N::Number, U, J, Ezlist, νlist, mat; kws...) = 
+    plot_mat(ax, N, U, J, Ezlist, νlist, mat, "LMC", "σxxx [1/T*e²/h]"; kws...)
+
 LMC.plot_lmcspin(PID::String, pdPID, interpPID, evals, Ezlist, νlist, mat; kws...) = 
     plot_mat(PID, pdPID, interpPID, evals, Ezlist, νlist, mat, "LMC spin", "σxxx [1/T*e²/h]"; kws...)
 
 LMC.plot_lmcspin(N::Number, U, J, Ezlist, νlist, mat; kws...) = 
     plot_mat(N, U, J, Ezlist, νlist, mat, "LMC spin", "σxxx [1/T*e²/h]"; kws...)
+
+LMC.plot_lmcspin(ax, PID::String, pdPID, interpPID, evals, Ezlist, νlist, mat; kws...) = 
+    plot_mat(ax, PID, pdPID, interpPID, evals, Ezlist, νlist, mat, "LMC spin", "σxxx [1/T*e²/h]"; kws...)
+
+LMC.plot_lmcspin(ax, N::Number, U, J, Ezlist, νlist, mat; kws...) = 
+    plot_mat(ax, N, U, J, Ezlist, νlist, mat, "LMC spin", "σxxx [1/T*e²/h]"; kws...)
 #_________________________________________
 #_______________________________________________________________________________________
 # Drude
@@ -449,16 +535,28 @@ LMC.plot_lmcspin(N::Number, U, J, Ezlist, νlist, mat; kws...) =
 LMC.plot_drude(PID::String, pdPID, interpPID, evals, Ezlist, νlist, mat; kws...) = 
     plot_mat(PID, pdPID, interpPID, evals, Ezlist, νlist, mat, "σxx", "σxx [e²/h]"; kws...)
 
+LMC.plot_drude(ax, PID::String, pdPID, interpPID, evals, Ezlist, νlist, mat; kws...) = 
+    plot_mat(ax, PID, pdPID, interpPID, evals, Ezlist, νlist, mat, "σxx", "σxx [e²/h]", colors = [:black, :lightblue]; kws...)
+
 LMC.plot_drude(N::Number, U, J, Ezlist, νlist, mat; kws...) = 
     plot_mat(N, U, J, Ezlist, νlist, mat, "σxx", "σxx [e²/h]"; kws...)
+
+LMC.plot_drude(ax, N::Number, U, J, Ezlist, νlist, mat; kws...) = 
+    plot_mat(ax, N, U, J, Ezlist, νlist, mat, "σxx", "σxx [e²/h]"; kws...)
 #_________________________________________________________________________________________
 # AHE. xy
 #_________________________________________________________________________________________
 LMC.plot_ahe(PID::String, pdPID, interpPID, evals, Ezlist, νlist, mat; kws...) = 
     plot_mat(PID, pdPID, interpPID, evals, Ezlist, νlist, mat, "AHE", "σxy [e²/h]"; kws...)
 
+LMC.plot_ahe(ax, PID::String, pdPID, interpPID, evals, Ezlist, νlist, mat; kws...) = 
+    plot_mat(ax, PID, pdPID, interpPID, evals, Ezlist, νlist, mat, "AHE", "σxy [e²/h]"; kws...)
+
 LMC.plot_ahe(N::Number, U, J, Ezlist, νlist, mat; kws...) = 
     plot_mat(N, U, J, Ezlist, νlist, mat, "AHE", "σxy [e²/h]"; kws...)
+
+LMC.plot_ahe(ax, N::Number, U, J, Ezlist, νlist, mat; kws...) = 
+    plot_mat(ax, N, U, J, Ezlist, νlist, mat, "AHE", "σxy [e²/h]"; kws...)
 
 #_________________________________________________________________________________________
 # Plotter
@@ -466,11 +564,7 @@ LMC.plot_ahe(N::Number, U, J, Ezlist, νlist, mat; kws...) =
 function plot_mat(N::Number, U, J, Ezlist, νlist, matt, label, labellegend; colorrange = [-maximum(abs.(matt)), maximum(abs.(matt))])
     fig = Figure()
     ax= Axis(fig[1,1], xlabel = "Ez [meV]", ylabel = "ν", title = "$(label): N = $(N), U = $(U), J = $(J)")
-    ylims!(ax,  νlist[1], νlist[end])
-    xlims!(ax, Ezlist[1], Ezlist[end])
-    colors = cgrad([:lightblue,:black,:red])
-    # hm =  heatmap!(ax, Ezlist,  νlist, mat, colormap = colors, colorrange = [-maximum(mat), maximum(mat)])#, colorrange = [-1,2])#, rasterize = true)
-    hm =  heatmap!(ax, νlist, Ezlist, matt', colormap = colors,  rasterize = true, colorrange = [-1,2])#, rasterize = true)
+    hm = aux_plot_map(ax, νlist,  Ezlist, matt, colorrange, labellegend)
     cb = Colorbar(fig[1,2], hm, label = labellegend)
     return fig
 end
@@ -478,11 +572,35 @@ end
 function plot_mat(PID::String, pdPID, interpPID, evals, Ezlist, νlist, matt, label, labellegend; colorrange = [-maximum(abs.(matt)), maximum(abs.(matt))])
     fig = Figure(size=(600,600))
     ax= Axis(fig[1,1], xlabel = "ν", ylabel = "Ez [meV]", title = "$(label): PID = $(PID), intPID = $(interpPID), pdPID = $(pdPID), evals = $(evals)")
-    xlims!(ax,  νlist[1], νlist[end])
-    ylims!(ax, Ezlist[1], Ezlist[end])
-    colors = cgrad([:lightblue,:black,:red])
-    # hm =  heatmap!(ax, Ezlist,  νlist, mat, colormap = colors, colorrange = [-maximum(mat), maximum(mat)])#, colorrange = [-1,2])#, rasterize = true)
-    hm =  heatmap!(ax, νlist, Ezlist, matt', colormap = colors, colorrange = colorrange, rasterize = true)#, colorrange = [-1,2])#, rasterize = true)
+    hm = aux_plot_map(ax, νlist,  Ezlist, matt, colorrange, labellegend)
     cb = Colorbar(fig[1,2], hm, label = labellegend)
     return fig
+end
+
+function plot_mat(ax, N::Number, U, J, Ezlist, νlist, matt, label, labellegend; colorrange = [-maximum(abs.(matt)), maximum(abs.(matt))], colors = missing)
+    hm = aux_plot_map(ax, νlist,  Ezlist, matt, colorrange, labellegend, colors = colors)
+    return hm
+end
+
+function plot_mat(ax, PID::String, pdPID, interpPID, evals, Ezlist, νlist, matt, label, labellegend; colorrange = [-maximum(abs.(matt)), maximum(abs.(matt))], colors = missing, absolute = false)
+    hm = aux_plot_map(ax, νlist,  Ezlist, matt, colorrange, labellegend, colors = colors, absolute = absolute)
+    return hm
+end
+
+function aux_plot_map(ax, νlist,  Ezlist, matt, colorrange, labellegend; colors = missing, absolute = false)
+    xlims!(ax,  νlist[1], νlist[end])
+    ylims!(ax, Ezlist[1], Ezlist[end])
+    if isa(colors, Missing)
+        colorss = cgrad([:lightblue,:black,:red])
+    else 
+        colorss = colors
+    end
+    if absolute == false
+    # hm =  heatmap!(ax, Ezlist,  νlist, mat, colormap = colors, colorrange = [-maximum(mat), maximum(mat)])#, colorrange = [-1,2])#, rasterize = true)
+    hm =  heatmap!(ax, νlist, Ezlist, matt', colormap = colorss, colorrange = colorrange, rasterize = true, dpi = 500)#, colorrange = [-1,2])#, rasterize = true)
+    else 
+        colorss = cgrad([:black, :lightblue])
+    hm =  heatmap!(ax, νlist, Ezlist, abs.(matt)', colormap = colorss, colorrange = [0, maximum(colorrange)], rasterize = true, dpi = 500)#, colorrange = [-1,2])#, rasterize = true)
+    end
+    return hm
 end

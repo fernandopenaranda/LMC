@@ -1,8 +1,10 @@
 """
 function that computes the k_resolved OMM and/or Berry curvature contributions to the LMC
 """
-function klmc(pR::Params_rhombohedral, i,j,k, h, dh, ddh, rz, τ, T; Ω_contr = true, omm_contr = true, fermi_surface = false, with_shift = true, points = 10)
-    integrand(q) = Optics_in_the_length_gauge.k_linear_magneto_conductivity(i, j, k, h, dh, ddh, rz, q; T = T, τ = τ, 
+function klmc(pR::Params_rhombohedral, i,j,k, h, dh, ddh, rz, τ, T; 
+        Ω_contr = true, omm_contr = true, fermi_surface = false, 
+        with_shift = true, points = 10)
+    integrand(q) = Optics_in_the_length_gauge.k_linear_magneto_conductivity_orbital(i, j, k, h, dh, ddh, rz, q; T = T, τ = τ, 
         Ω_contr = Ω_contr, omm_contr = omm_contr, fermi_surface = fermi_surface, with_shift = with_shift)
     return evalmat(pR, integrand, points)
 end

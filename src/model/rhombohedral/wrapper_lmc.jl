@@ -25,8 +25,8 @@ function xxx_lmc_presets(N, p::Params_rhombohedral; T = 10, τ = 200, evals = 10
     dhy(q) = dhyNlg(N, q, p)   .* unit_convention_two_packages_E
     dh(q) = [dhx(q), dhy(q)]
     dhxx(q) = dhxxNlg(N, q, p) .* unit_convention_two_packages_E
-    
     rz(q, ψs) = rzNlg(N, ψs)  
+    
     # integral bounds (around the valley)
     cnst = p.γ1/(p.γ0 *√3/2)
     xbounds = [-cnst-ϵ, cnst]   # this is a ratio of energies, convention independent
