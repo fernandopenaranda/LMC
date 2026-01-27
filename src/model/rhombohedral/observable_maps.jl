@@ -2,7 +2,7 @@
 # LMC
 #_________________________________________________________________________________________
 """
-function observable functions are defined for each flavour so you have to sum
+observable functions are defined for each flavour so you have to sum
 the four of them to get the experimental value
 """
 function lmc_map(N, p::Params_rhombohedral, Ezlist, νlist, μαs; kws...)
@@ -19,7 +19,6 @@ function drude_map(N, p::Params_rhombohedral, Ezlist, νlist, μαs; kws...)
         xx_drude_presets(N, Params_rhombohedral(p, ξ = ξ, μ = μ, Delta_Ez = Ez); kws...)
         return map_eval(drude_conductivity, presets, μαs, Ezlist, νlist)
 end
-
 
 #_________________________________________________________________________________________
 # AHE. xy

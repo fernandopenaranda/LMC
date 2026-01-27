@@ -30,8 +30,9 @@ function xxx_lmc_presets(p::ParamsHF, of; T = 1, τ = 200, evals = 100, ϵ = 1e-
     return planar_presets
 end
 
-
-
+#=
+method not implemented yet
+=#
 function xxx_lmc_spin_presets(p::ParamsHF, of; T = 1, τ = 200, evals = 100, ϵ = 1e-7,  
     berry_contribution = true, omm_contribution = true, fermi_surface = false,
     with_shift= false)

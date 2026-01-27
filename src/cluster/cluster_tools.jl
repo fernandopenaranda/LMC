@@ -65,3 +65,19 @@ function slurm_submit_observable(phasediagramPID::Union{String,Number};
     jobid = parse(Int, split(output)[end])
     return jobid
 end
+
+"""using the results of the Hartree-Fock algorithm on the THFM we compute for a given observable 
+the Drude, LMC_orbital, LMC_spin, QAH"""
+function slurm_submit_tbg_observable(folder::Union{String,Number}, phase::String;
+    dryrun=false, evals = 10, T = 1, tau = 200, which_observable = "Drude")
+    lmcfolder = dirname(pathof(LMC)) * "/cluster/tbg_observables.jl"
+    script = script_path("run_tbg_observables.sh")
+    cmd = `sbatch --wait $script $lmcfolder $folder $phase $evals $nu_max $T $tau $which_observable`
+    dryrun && return cmd
+    run(cmd)
+    # Capture stdout
+    output = read(cmd, String)
+    # Example output: "Submitted batch job 3228119\n"
+    jobid = parse(Int, split(output)[end])
+    return jobid
+end
