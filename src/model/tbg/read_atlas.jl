@@ -13,7 +13,7 @@ function substrateoff(PID::Array)
 end
 substrateyesornot(PID::Number) = substrateyesornot(string(PID))
 function substrateyesornot(PID::String)
-    file = proj_folder*"/Paper/ClusterTBG/"*PID*"/1/"*"params.csv"
+    file = proj_folder*"/Paper/ClusterTBG/"*PID*"/"*"params.csv"
     if isfile(file)
         l = CSV.read(file, DataFrame)
         if :sigmaz in names(l) && :sigmazlayerz in names(l)
