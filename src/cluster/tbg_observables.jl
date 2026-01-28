@@ -81,11 +81,11 @@ print("Computation...")
 
 print("Storing...")
 
-new_data_folder = pwd() * "/Data/tbg_$(which_observable)/" * string(PID) * "/" * string(job_id)
+new_data_folder = pwd() * "/Data/tbg_$(which_observable)_$(phase)/" * string(PID) * "/" * string(job_id)
 mkpath(new_data_folder)
 
-comp_struct = Observable_computation(job_id, jobs_num, PID, dataPID, 
-    phasediagPID, evals, T, tau, which_observable)
+comp_struct = Observable_computation(job_id, jobs_num, PID, PID, 
+    PID, evals, T, tau, which_observable)
 
 n = s.ns[job_id+1]
 mu = s.mus[job_id+1]
