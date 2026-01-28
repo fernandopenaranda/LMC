@@ -66,16 +66,23 @@ function Ez_map_eval(obs, presets, μs, Ez, νlist)
     ξs = [1, -1, 1, -1]
     obs_list = zeros(length(νlist))
     if obs == linear_magneto_conductivity_spin
+        obs_list2 = zeros(length(νlist))
+        obs_list3 = zeros(length(νlist))
+        obs_list4 = zeros(length(νlist))
+
         σs = [1, 1, -1, -1] # spin array
         for (j, ν) in enumerate(νlist)
-            obs_list[j] = sum([σs[k] * obs(presets(ξ = ξs[k], Ez = Ez, μ = μs[j][k]))
-                 for k in 1:4]) # sum over the 4 flavors
+            obs_list[j]  = sum(obs(presets(ξ = ξs[1], Ez = Ez, μ = μs[j][1]))) # sum over the 4 flavors
+            obs_list2[j] = sum(obs(presets(ξ = ξs[2], Ez = Ez, μ = μs[j][2]))) # sum over the 4 flavors
+            obs_list3[j] = sum(obs(presets(ξ = ξs[3], Ez = Ez, μ = μs[j][3]))) # sum over the 4 flavors
+            obs_list4[j] = sum(obs(presets(ξ = ξs[4], Ez = Ez, μ = μs[j][4]))) # sum over the 4 flavors
          end
+        return obs_list, obs_list2, obs_list3, obs_list4
     else
         for (j, ν) in enumerate(νlist)
             obs_list[j] = sum([obs(presets(ξ = ξs[k], Ez = Ez, μ = μs[j][k])) 
                  for k in 1:4]) # sum over the 4 flavors
          end
+         return obs_list
     end
-    return obs_list
 end
