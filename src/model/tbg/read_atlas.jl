@@ -25,7 +25,7 @@ function substrateyesornot(PID::String)
 end
 readparams(PID::Number) = readparams(string(PID))
 function readparams(PID::String)
-    file = proj_folder*"/Paper/ClusterTBG/"*PID*"/1/"*"params.csv"
+    file = proj_folder * "/Paper/ClusterTBG/" * PID * "/" * "params.csv"
     if isfile(file)
         l = CSV.read(file, DataFrame)
         return l
