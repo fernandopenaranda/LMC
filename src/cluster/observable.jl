@@ -40,30 +40,26 @@ if which_observable != "LMC_spin"
             Params_rhombohedral(PD_presets.p, ξ = ξ, μ = μ, Delta_Ez = Ez),
             T = T, τ = tau, evals = evals, berry_contribution = true,
             omm_contribution = true, fermi_surface = false, with_shift= false)
-
-    elseif which_observable == "LMC_spin" #
-        obs = linear_magneto_conductivity_spin
-        presets(; ξ, Ez, μ) = Planar_σijk_presets_spin([1I,1I,1I],
-            xxx_lmc_presets(PD_presets.N, 
-                Params_rhombohedral(PD_presets.p, ξ = ξ, μ = μ, Delta_Ez = Ez),
-                T = T, τ = tau, evals = evals, berry_contribution = true,
-                omm_contribution = true, fermi_surface = false, with_shift= false))
-
     elseif which_observable == "QAH" 
         obs = σij_anomalous_hall
         presets(; ξ, Ez, μ) = 
-            qah_presets(PD_presets.N, :x, :y, Params_rhombohedral(PD_presets.p, ξ = ξ, μ = μ, Delta_Ez = Ez),
-                T = T, evals = evals) 
+        qah_presets(PD_presets.N, :x, :y, Params_rhombohedral(PD_presets.p, ξ = ξ, μ = μ, Delta_Ez = Ez),
+        T = T, evals = evals) 
     else throw(ArgumentError("observable not allowed")) end
-        obs_list = Ez_map_eval(obs, presets, mus[1], Ezs[1], nu_list)
-        @save new_data_folder * "/data.jld" Ezs nu_list obs_list mus nss
+    obs_list = Ez_map_eval(obs, presets, mus[1], Ezs[1], nu_list)
+    @save new_data_folder * "/data.jld" Ezs nu_list obs_list mus nss
 else
+    obs = linear_magneto_conductivity_spin
+    presets(; ξ, Ez, μ) = Planar_σijk_presets_spin([1I,1I,1I],
+        xxx_lmc_presets(PD_presets.N, 
+            Params_rhombohedral(PD_presets.p, ξ = ξ, μ = μ, Delta_Ez = Ez),
+            T = T, τ = tau, evals = evals, berry_contribution = true,
+            omm_contribution = true, fermi_surface = false, with_shift= false))
     obs_list1, obs_list2, obs_list3, obs_list4 = Ez_map_eval(obs, presets, mus[1], Ezs[1], nu_list)
     @save new_data_folder * "/data.jld" Ezs nu_list obs_list1 obs_list2 obs_list3 obs_list4 mus nss
 end
 
-comp_struct = Observable_computation(job_id, jobs_num, PID, dataPID, 
-            phasediagPID, evals, T, tau, which_observable)
+comp_struct = Observable_computation(job_id, jobs_num, PID, dataPID, phasediagPID, evals, T, tau, which_observable)
 @save new_data_folder * "/presets.jld" comp_struct
 
 print("Success!")
