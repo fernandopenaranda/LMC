@@ -154,31 +154,31 @@ function k_expected_value_op!(vals, vecs, ofmat, projs, p, k, mu, of, op; kws...
 end
 
 # Bandstructure
-function k_path(p::ParamsHF, num_points; ϵ = 0)
-    g1, g2 = bravais_vectors(p)
-    K1 =  κ(g1, g2)
-    K2 =  κ(g2, g1)
-    # Initialize an array to store the line points
-    # line_points = Array{Tuple{Float64, Float64}}(undef, num_points+1)
-    # Compute the line points and store them in the array
-    line_points = []
-    for i in 0:(√3/2+1+1/2) * num_points+1
-        if i ≤ num_points
-        x = K1[1] - i * (1+ϵ) * K1[1]/num_points
-        y = K1[2] + i *(1+ϵ) * K2[2]/num_points
+# function k_path(p::ParamsHF, num_points; ϵ = 0)
+#     g1, g2 = bravais_vectors(p)
+#     K1 =  κ(g1, g2)
+#     K2 =  κ(g2, g1)
+#     # Initialize an array to store the line points
+#     # line_points = Array{Tuple{Float64, Float64}}(undef, num_points+1)
+#     # Compute the line points and store them in the array
+#     line_points = []
+#     for i in 0:(√3/2+1+1/2) * num_points+1
+#         if i ≤ num_points
+#         x = K1[1] - i * (1+ϵ) * K1[1]/num_points
+#         y = K1[2] + i *(1+ϵ) * K2[2]/num_points
 
-        elseif i > num_points && i ≤ (√3/2+1) * num_points
-        x = 0.0 + (i-num_points) * (1+ϵ) * K1[1]/(√3/2*num_points)
-        y = 0.0
-        else
-        x = K1[1]
-        y = 0 + (i-(√3/2+1) * num_points) *(1+ϵ) * K2[2]/(num_points/2)
-        # line_points[i+1] = (x, y)
-        end
-    push!(line_points, (x,y))
-    end
-    return line_points
-end
+#         elseif i > num_points && i ≤ (√3/2+1) * num_points
+#         x = 0.0 + (i-num_points) * (1+ϵ) * K1[1]/(√3/2*num_points)
+#         y = 0.0
+#         else
+#         x = K1[1]
+#         y = 0 + (i-(√3/2+1) * num_points) *(1+ϵ) * K2[2]/(num_points/2)
+#         # line_points[i+1] = (x, y)
+#         end
+#     push!(line_points, (x,y))
+#     end
+#     return line_points
+# end
 
 
 function k_path(p::ParamsHF, num_points; ϵ = 0)

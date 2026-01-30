@@ -79,7 +79,7 @@ module LMC
     export lmc_map, drude_map, ahe_map, map_eval, Ez_map_eval
     export script_path, slurm_submit_interpolations, slurm_submit_phasediagrams, slurm_submit_observable, slurm_submit_tbg_observable, data_merge, postprocessing
     export plot_phasediagrams, spinfull_plotbandsanddos, plot_cluster_bandsanddos
-    export plot_drude, plot_ahe, plot_lmc, plot_lmcspin, aux_plot_obs
+    export plot_drude, plot_ahe, plot_lmc, plot_lmcspin, aux_plot_obs, aux_plot_tbg_obs
     export hf_plotbands, plotbands!, hf_plotbands!
     export hf_valley_spin_hamiltonian, dhf_hamiltonian, rz, int_boundaries, paramsHF, ParamsHF
     export lmc_spin_sweep, lmc_orb_sweep, Self_consistent_data, drude_sweep

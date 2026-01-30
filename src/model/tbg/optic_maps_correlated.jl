@@ -83,16 +83,6 @@ function provide_folder_get_observables_atlas(folder)
     Self_consistent_data(s[1], s[2], s[3], s[4])
 end
 
-# function provide_folder_get_observables_atlas_reshuffled(folder, rs = "rs")
-#  str = pwd() * "/Data" * "/" * string(folder)
-#     es_path = str * "/joined_es_"*rs*".csv"
-#     mus_path = str * "/joined_mus_"*rs*".csv"
-#     ns_path = str * "/joined_ns_"*rs*".csv"
-#     ofmats_path = str * "/joined_ofmats_"*rs*".csv"
-#     s = return_variables_reshuffled(es_path,mus_path, ns_path, ofmats_path )
-#     Self_consistent_data(s[1], s[2], s[3], s[4])
-# end
-
 function return_variables(es_path,mus_path, ns_path, ofmats_path )
     ns_unordered = flatten(parse_str_to_arr.(import_array(ns_path)))
     indices = sortperm(ns_unordered)

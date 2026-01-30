@@ -5,12 +5,64 @@ function provide_folder_get_observables_atlas_reshuffled(folder, rs = "rs")
        ns_path = str * "/joined_ns_"*rs*".csv"
        ofmats_path = str * "/joined_ofmats_"*rs*".csv"
        s = return_variables_reshuffled(es_path,mus_path, ns_path, ofmats_path )
-       Self_consistent_data(s[1], s[2], s[3], s[4])
+       Self_consistent_data(degen_decission(s), s[2], s[3], s[4])
 end
+
+"noise instabilities over deg groundstates reduction"
+function degen_decission(s)
+    nss = [[s[1][i][fill] for i in 1:length(s[2])] for fill in 1:8];
+    intnss = [interpolate_despike(s[4], nss[fill], 0.01) for fill in 1:8];
+    return [getindex.(intnss, i) for i in 1:length(intnss[1])]
+end
+
 function substrateoff(PID::Array)
     s = [substrateyesornot(p) for p in PID]
     numbers[findall(x-> x == false, s)]
 end
+
+function interpolate_despike(x,y, threshold)
+    good = detect_outliers(y, threshold)
+    xg = x[good]
+    yg = y[good]
+    itp = linear_interpolation(xg, yg, extrapolation_bc = Line())
+    return itp.(x)
+end
+
+function detect_outliers(data::AbstractVector{<:Real}, threshold::Real)
+    n = length(data)
+    good = trues(n)
+    for i in 2:n-1
+        avg_neighbors = (data[i-1] + data[i+1]) / 2
+        if abs(data[i] - avg_neighbors) > threshold
+            good[i] = false
+        end
+    end
+    return good
+end
+
+function despike_forward!(d, threshold)
+    data = zeros(length(d))
+    n = length(data)
+    data[1] = d[1]
+    for i in 2:n-1
+        left  = data[i-1]      # already filtered
+        mid   = d[i]
+        right = d[i+1]      # original (not yet filtered)
+
+        avg_neighbors = (left + right) / 2
+        deviation = abs(mid - avg_neighbors)
+
+        if deviation > threshold && abs(right)-abs(mid) > threshold && abs(left)-abs(mid) > threshold || deviation > 10threshold
+        data[i] = avg_neighbors
+        else 
+            data[i] = d[i]
+        end
+    end
+
+    return data
+end
+
+
 substrateyesornot(PID::Number) = substrateyesornot(string(PID))
 function substrateyesornot(PID::String)
     file = proj_folder*"/Paper/ClusterTBG/"*PID*"/"*"params.csv"

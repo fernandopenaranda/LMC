@@ -110,6 +110,29 @@ function LMC.plotbands!(ax::Axis, mat; dots = false, color = missing, ylimits = 
 end
 
 
+function LMC.aux_plot_tbg_obs(presetpath, obspath)
+    ppd = load(presetpath)
+    pddata = load(obspath)
+    vals = ppd["presets"]
+    interpPID = vals["comp_struct"].interpPID
+    pdPID = vals["comp_struct"].phasediagPID
+    PID = vals["comp_struct"].PID
+    evals = vals["comp_struct"].evals
+    _, first_value = first(pddata["merged"])
+    keylist = keys(first_value)
+    nus = []
+    obsmat = []
+    for (path, d) in pddata["merged"]
+            nu = d["n"][1]
+            o = d["obs_val"]
+            push!(nus, nu)
+            push!(obsmat, o)
+    end
+    sorted_inds = sortperm(nus)
+    obss = obsmat[sorted_inds]
+    return nus[sorted_inds], obss[sorted_inds]
+end
+
 
 function plothartreebands(μ, hart; M = 4, λ = 90)
     fig = LMC.hf_plotbands(M = M, λ = λ, μ = μ, ν = 1, nmax =1,  color = :gray, ylims = [-50,50], hartree = hart, sigmaz = 0);

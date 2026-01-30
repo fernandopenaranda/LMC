@@ -23,7 +23,7 @@ hf_plotbands!(kws...) = not_defined(kws...)
 plotbands!(kws...) = not_defined(kws...)
 plotbands(kws...) = not_defined(kws...)
 plotmybands!(kws...) = not_defined(kws...)
-
+aux_plot_tbg_obs(kws...) = not_defined(kws...)
 function not_defined(args...)
     error("Load CairoMakie to enable plotting")
 end
