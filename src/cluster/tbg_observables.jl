@@ -90,7 +90,7 @@ comp_struct = Observable_computation(job_id, jobs_num, PID, PID,
 n = s.ns[job_id+1]
 mu = s.mus[job_id+1]
 @save new_data_folder * "/presets.jld" comp_struct
-@save new_data_folder * "/data.jld" n mu p
+@save new_data_folder * "/data.jld" n mu p obs_val
 
 print("Success!")
 

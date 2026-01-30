@@ -347,27 +347,58 @@ function aux_plot_obs(pdpath, pdpresetpath, func; flavor_filling = missing)
     evals = vals["comp_struct"].evals
     _, first_value = first(pddata["merged"])
     keylist = keys(first_value)
-    Ezs = []
-    obsmat = []
-    for (path, d) in pddata["merged"]
-        Ez = d["Ezs"][1]
-        o = d["obs_list"]
-        push!(Ezs, Ez)
-        push!(obsmat, o)
-    end
-    sorted_inds = sortperm(Ezs)
-    νlist = first_value["nu_list"]
-    mat = reshape_observables(obsmat[sorted_inds])
-    if func == LMC.plot_ahe || func == LMC.plot_lmc
-        valley_ordering = reorder_valleys(pdpath, pdpresetpath, flavor_filling)
-        matt = abs.(mat) .* valley_ordering
-    elseif func == LMC.plot_drude #|| 
-        matt = abs.(mat)
-    elseif func == LMC.plot_lmcspin
+    if func == LMC.plot_ahe || func ==LMC.plot_drude || func == LMC.plot_lmc
+        Ezs = []
+        obsmat = []
+        for (path, d) in pddata["merged"]
+            Ez = d["Ezs"][1]
+            o = d["obs_list"]
+            push!(Ezs, Ez)
+            push!(obsmat, o)
+        end
+        sorted_inds = sortperm(Ezs)
+        νlist = first_value["nu_list"]
+        mat = reshape_observables(obsmat[sorted_inds])
+        if func == LMC.plot_ahe || func == LMC.plot_lmc
+            valley_ordering = reorder_valleys(pdpath, pdpresetpath, flavor_filling)
+            matt = abs.(mat) .* valley_ordering
+            return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt
+        elseif func == LMC.plot_drude #|| 
+            matt = abs.(mat)
+        end
+         return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt
+    else func == LMC.plot_lmcspin
+        Ezs = []
+        obsmat1 = []
+        obsmat2 = []
+        obsmat3 = []
+        obsmat4 = []
+        for (path, d) in pddata["merged"]
+            Ez = d["Ezs"][1]
+            o1 = d["obs_list1"]
+            o2 = d["obs_list2"]
+            o3 = d["obs_list3"]
+            o4 = d["obs_list4"]
+            push!(Ezs, Ez)
+            push!(obsmat1, o1)
+            push!(obsmat2, o2)
+            push!(obsmat3, o3)
+            push!(obsmat4, o4)
+        end
+        sorted_inds = sortperm(Ezs)
+        νlist = first_value["nu_list"]
+        mat1 = reshape_observables(obsmat1[sorted_inds])
+        mat2 = reshape_observables(obsmat2[sorted_inds])
+        mat3 = reshape_observables(obsmat3[sorted_inds])
+        mat4 = reshape_observables(obsmat4[sorted_inds])
         valley_ordering = reorder_spins(pdpath, pdpresetpath, flavor_filling)
-        matt = abs.(mat) .* valley_ordering
+        matt1 = abs.(mat1)
+        matt2 = abs.(mat2)
+        matt3 = abs.(mat3)
+        matt4 = abs.(mat4)
+
+    return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt1, matt2, matt3, matt4
     end
-    return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt
 end
 
 

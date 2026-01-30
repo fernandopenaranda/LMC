@@ -50,6 +50,8 @@ module LMC
     include(tbg_folder * "hf_presets.jl")
     include(tbg_folder * "hf_model.jl")
     include(tbg_folder * "hf_velocities.jl")
+    include(tbg_folder * "hf_observables.jl")
+    
     include(tbg_folder * "rz_operator_ansatz.jl")
     include(tbg_folder * "optic_maps_correlated.jl")
     include(tbg_folder * "wrapper_lmc.jl")
@@ -78,6 +80,7 @@ module LMC
     export script_path, slurm_submit_interpolations, slurm_submit_phasediagrams, slurm_submit_observable, slurm_submit_tbg_observable, data_merge, postprocessing
     export plot_phasediagrams, spinfull_plotbandsanddos, plot_cluster_bandsanddos
     export plot_drude, plot_ahe, plot_lmc, plot_lmcspin, aux_plot_obs
+    export hf_plotbands, plotbands!, hf_plotbands!
     export hf_valley_spin_hamiltonian, dhf_hamiltonian, rz, int_boundaries, paramsHF, ParamsHF
     export lmc_spin_sweep, lmc_orb_sweep, Self_consistent_data, drude_sweep
 end

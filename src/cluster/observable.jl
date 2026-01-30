@@ -14,7 +14,6 @@ T = parse(Float64, ARGS[6]) # temperature a <= eta/kb ~ 1K, since this is really
 tau = parse(Float64, ARGS[7])
 which_observable = ARGS[8]  # Drude, LMC_orbital, LMC_spin, or QAH
 
-
 println("Importing interpolating data")
 
 using JLD2, CSV, DataFrames, Interpolations, LMC, Optics_in_the_length_gauge, LinearAlgebra
@@ -51,7 +50,7 @@ if which_observable != "LMC_spin"
 else
     obs = linear_magneto_conductivity_spin
     presets(; ξ, Ez, μ) = Planar_σijk_presets_spin([1I,1I,1I],
-        xxx_lmc_presets(PD_presets.N, 
+        xxx_lmc_presets(PD_presets.N,
             Params_rhombohedral(PD_presets.p, ξ = ξ, μ = μ, Delta_Ez = Ez),
             T = T, τ = tau, evals = evals, berry_contribution = true,
             omm_contribution = true, fermi_surface = false, with_shift= false))

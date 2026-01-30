@@ -1,0 +1,15 @@
+JOBID=4582071 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/Us627/src/cluster/tbg_observables.jl 1 199 4582071 2281278 vp 5  0.3 200 Drude
+JOBID=4582216 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/Us627/src/cluster/tbg_observables.jl 1 199 4582216 2281278 vp 5  0.3 200 Drude
+JOBID=4585007 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/CQgZj/src/cluster/tbg_observables.jl 1 199 4585007 2281278 vp 5  0.3 200 Drude
+JOBID=4586432 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/CQgZj/src/cluster/tbg_observables.jl 1 199 4586432 2281278 vp 5  0.3 200 Drude
+JOBID=4586543 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/gcHv3/src/cluster/tbg_observables.jl 1 199 4586543 2281278 vp 5  0.3 200 Drude
+JOBID=4586895 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4586895 2281278 vp 5  0.3 200 Drude
+JOBID=4587168 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4587168 2281278 vp 5  0.3 200 Drude
+JOBID=4587471 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4587471 2281278 qah 5  0.3 200 Drude
+JOBID=4587753 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4587753 2281278 qah 5  0.3 200 Drude
+JOBID=4588007 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4588007 2281278 vp 100000  1 200 Drude
+JOBID=4591707 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4591707 2281278 vp 100000  1 200 Drude
+JOBID=4598799 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4598799 2281278 vp 100000  1 200 Drude
+JOBID=4600788 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4600788 2281278 qah 100000  1 200 Drude
+JOBID=4604805 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4604805 2281278 qah 100000  1 200 Drude
+JOBID=4609557 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4609557 2281278 vp 100000  1 200 Drude
