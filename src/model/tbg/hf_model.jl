@@ -154,7 +154,7 @@ end
 
 """
 the two valleys are explicitly included. 
-there is still a spins degeneracy assumed.
+there is still a spin degeneracy assumed.
 of is the density matrix of the f electrons, only required for the correlated gs
 
 hf_plotbands(ParamsHF(p, sigmaz=0, μ =0, vafek= 0, J = -8, U1 = 10, VP = true, twovalleys = true, KIVC=false))

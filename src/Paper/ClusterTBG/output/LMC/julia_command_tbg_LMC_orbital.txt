@@ -2,3 +2,13 @@ JOBID=4609753 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /ho
 JOBID=4609863 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/lqVDo/src/cluster/tbg_observables.jl 1 199 4609863 2281278 vp 100000  1 200 LMC_orbital
 JOBID=4612382 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/FmsiU/src/cluster/tbg_observables.jl 1 199 4612382 2281278 vp 2  1 200 LMC_orbital
 JOBID=4612639 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/FmsiU/src/cluster/tbg_observables.jl 1 199 4612639 2281278 vp 2  1 200 LMC_orbital
+JOBID=4613998 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/FmsiU/src/cluster/tbg_observables.jl 1 199 4613998 2281278 vp 100000  1 200 LMC_orbital
+JOBID=4614127 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/FmsiU/src/cluster/tbg_observables.jl 1 199 4614127 2281278 vp 100000  1 200 LMC_orbital
+JOBID=4614263 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/FmsiU/src/cluster/tbg_observables.jl 1 199 4614263 2281278 qah 100000  1 200 LMC_orbital
+JOBID=4614305 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/FmsiU/src/cluster/tbg_observables.jl 1 199 4614305 2281278 vp 100000  1 200 LMC_orbital
+JOBID=4616583 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/tOBrz/src/cluster/tbg_observables.jl 1 199 4616583 2281278 vp 5000  1 200 LMC_orbital
+JOBID=4616767 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/tOBrz/src/cluster/tbg_observables.jl 1 199 4616767 2281278 vp 5000  1 200 LMC_orbital
+JOBID=4617898 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/tOBrz/src/cluster/tbg_observables.jl 1 199 4617898 2281278 vp 5000  1 200 LMC_orbital
+JOBID=4618700 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/tOBrz/src/cluster/tbg_observables.jl 1 199 4618700 2281278 qah 5000  1 200 LMC_orbital
+JOBID=4619343 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/tOBrz/src/cluster/tbg_observables.jl 1 199 4619343 2281278 qah 5000  1 200 LMC_orbital
+JOBID=4621054 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/tOBrz/src/cluster/tbg_observables.jl 1 199 4621054 2281278 vp 100000  1 200 LMC_orbital

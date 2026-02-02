@@ -323,7 +323,7 @@ LMC.plot_lmc(ax, pdpath, pdpresetpath; kws...) =
     plot_obs(ax, pdpath, pdpresetpath, LMC.plot_lmc; kws...)
 
 LMC.plot_lmcspin(ax, pdpath, pdpresetpath; kws...) = 
-    plot_obs(ax, pdpath, pdpresetpath, LMC.plot_lmcspin; kws...)
+    plot_obs_spin(ax, pdpath, pdpresetpath, LMC.plot_lmcspin; kws...)
 
 
 
@@ -335,6 +335,11 @@ end
 function plot_obs(ax, pdpath, pdpresetpath, func; flavor_filling = missing , kws...)
     PID, pdPID, interpPID, evals, Ezs, νlist, matt = aux_plot_obs(pdpath, pdpresetpath, func, flavor_filling = flavor_filling)
     func(ax, PID, pdPID, interpPID, evals, Ezs, prefactor_filling()/1e12 .* νlist, matt; kws...)
+end
+
+function plot_obs_spin(ax, pdpath, pdpresetpath, func; flavor_filling = missing , kws...)
+    PID, pdPID, interpPID, evals, Ezs, νlist, matt1 = aux_plot_obs(pdpath, pdpresetpath, func, flavor_filling = flavor_filling)
+    func(ax, PID, pdPID, interpPID, evals, Ezs, prefactor_filling()/1e12 .* νlist, matt1; kws...)
 end
 
 function aux_plot_obs(pdpath, pdpresetpath, func; flavor_filling = missing)
@@ -392,12 +397,12 @@ function aux_plot_obs(pdpath, pdpresetpath, func; flavor_filling = missing)
         mat3 = reshape_observables(obsmat3[sorted_inds])
         mat4 = reshape_observables(obsmat4[sorted_inds])
         valley_ordering = reorder_spins(pdpath, pdpresetpath, flavor_filling)
-        matt1 = abs.(mat1)
-        matt2 = abs.(mat2)
-        matt3 = abs.(mat3)
-        matt4 = abs.(mat4)
+        matt1 = mat1
+        matt2 = mat2
+        matt3 = mat3
+        matt4 = mat4
 
-    return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt1, matt2, matt3, matt4
+    return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, abs.(matt1) + abs.(matt2) + abs.(matt3) + abs.(matt4)
     end
 end
 
