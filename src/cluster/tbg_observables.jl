@@ -23,6 +23,7 @@ which_observable = ARGS[9]  # Drude, LMC_orbital, LMC_spin, or QAH
 
 using JLD2, CSV, DataFrames, LMC, Optics_in_the_length_gauge, LinearAlgebra
 
+BLAS.set_num_threads(1)
 # import data from the hartree calculation and presets
 s = LMC.provide_folder_get_observables_atlas_reshuffled(folder, phase)
 l = LMC.readparams(folder)
