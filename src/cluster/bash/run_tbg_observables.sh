@@ -12,6 +12,7 @@
 
 export JULIA_DEPOT_PATH=/scratch/$USER/julia_depot
 mkdir -p "$JULIA_DEPOT_PATH"
+export JULIA_PKG_PRECOMPILE_AUTO=0
 
 pathtofile=$1
 folder=$2

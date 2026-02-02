@@ -82,5 +82,5 @@ module LMC
     export plot_drude, plot_ahe, plot_lmc, plot_lmcspin, aux_plot_obs, aux_plot_tbg_obs
     export hf_plotbands, plotbands!, hf_plotbands!
     export hf_valley_spin_hamiltonian, dhf_hamiltonian, rz, int_boundaries, paramsHF, ParamsHF
-    export lmc_spin_sweep, lmc_orb_sweep, Self_consistent_data, drude_sweep
+    export lmc_spin_sweep, lmc_orb_sweep, Self_consistent_data, drude_sweep 
 end
