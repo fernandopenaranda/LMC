@@ -402,7 +402,7 @@ function aux_plot_obs(pdpath, pdpresetpath, func; flavor_filling = missing)
         matt3 = mat3
         matt4 = mat4
 
-    return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, abs.(matt1) + abs.(matt2) + abs.(matt3) + abs.(matt4)
+    return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt1 + matt2 - matt3 - matt4
     end
 end
 

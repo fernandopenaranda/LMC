@@ -22,9 +22,6 @@ evals = parse(Int, ARGS[17])
 
 println("Importing interpolating data")
 
-using Pkg
-println(Pkg.status())
-
 using JLD2, CSV, DataFrames, Interpolations, LMC
 filestring = pwd() * "/Data/Interpolations/" * string(dataPID) * "/" * 
     string(job_id) 

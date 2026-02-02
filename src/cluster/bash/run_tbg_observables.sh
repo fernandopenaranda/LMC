@@ -10,6 +10,9 @@
 #SBATCH --error=slurm-%A.%a.err
 #SBATCH --mail-user=fernando.penaranda@dipc.org
 
+export JULIA_DEPOT_PATH=/scratch/$USER/julia_depot
+mkdir -p "$JULIA_DEPOT_PATH"
+
 pathtofile=$1
 folder=$2
 phase=$3
