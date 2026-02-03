@@ -173,7 +173,7 @@ lmc_spin_sweep(p::ParamsHF, s::Self_consistent_data; kws...) =
 function mr_orb_sweep(obs, p::ParamsHF, s::Self_consistent_data; kws...)
     mc_arr = []
     for (it,ν) in enumerate(s.ns)
-        if it % 10 == 0
+        if it % 50 == 0
             mc = obs(
                     xxx_lmc_presets(ParamsHF(p, μ = s.mus[it]),  diagm(s.ofmats[it]); kws...))
             append!(mc_arr, mc)
