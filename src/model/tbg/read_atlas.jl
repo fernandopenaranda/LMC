@@ -153,10 +153,12 @@ end
 function drude_sweep(p::ParamsHF, s::Self_consistent_data; kws...)
     d_arr = []
     for (it,ν) in enumerate(s.ns)
-        d = drude_conductivity(
-            xx_drude_presets(ParamsHF(p, μ = s.mus[it]),  diagm(s.ofmats[it]); kws...))
-        append!(d_arr, d)
-        println("progress: ", it/length(s.ns)," |  val: ", d)
+        if it % 1 == 0
+            d = drude_conductivity(
+                xx_drude_presets(ParamsHF(p, μ = s.mus[it]),  diagm(s.ofmats[it]); kws...))
+            append!(d_arr, d)
+            println("progress: ", it/length(s.ns)," |  val: ", d)
+        end
     end
     return s.ns, d_arr
 end
@@ -171,7 +173,7 @@ lmc_spin_sweep(p::ParamsHF, s::Self_consistent_data; kws...) =
 function mr_orb_sweep(obs, p::ParamsHF, s::Self_consistent_data; kws...)
     mc_arr = []
     for (it,ν) in enumerate(s.ns)
-        if it % 20 == 0
+        if it % 1 == 0
             mc = obs(
                     xxx_lmc_presets(ParamsHF(p, μ = s.mus[it]),  diagm(s.ofmats[it]); kws...))
             append!(mc_arr, mc)

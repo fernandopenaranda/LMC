@@ -17,3 +17,18 @@ JOBID=4619927 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /ho
 JOBID=4620201 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/tOBrz/src/cluster/tbg_observables.jl 1 199 4620201 2281278 vp 5000  1 200 Drude
 JOBID=4620449 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/tOBrz/src/cluster/tbg_observables.jl 1 199 4620449 2281278 qah 5000  1 200 Drude
 JOBID=4620729 CMD=/scratch/ferpe/julia-1.9.4/bin/julia --compiled-modules=no /home/ferpe/.julia/packages/LMC/tOBrz/src/cluster/tbg_observables.jl 1 199 4620729 2281278 qah 5000  1 200 Drude
+JOBID=4636946 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /scratch/ferpe/julia_depot/packages/LMC/jWHEy/src/cluster/tbg_observables.jl 1 199 4636946 2281278 vp 50000  1 200 Drude
+JOBID=4637376 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /scratch/ferpe/julia_depot/packages/LMC/jWHEy/src/cluster/tbg_observables.jl 1 199 4637376 2281278 vp 50000  1 200 Drude
+JOBID=4650101 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4650101 2281278 vp 20000  500 200 Drude
+JOBID=4650379 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4650379 2281278 vp 20000  500 200 Drude
+JOBID=4650903 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4650903 2281278 vp 100000  500 200 Drude
+JOBID=4651517 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4651517 2281278 vp 100000  500 200 Drude
+JOBID=4652174 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4652174 2281278 vp 100000  50 200 Drude
+JOBID=4652639 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4652639 2281278 vp 10000  5 200 Drude
+JOBID=4653448 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4653448 2281278 vp 10000  5 200 Drude
+JOBID=4654706 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4654706 2281278 vp 10000  50 200 Drude
+JOBID=4655329 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4655329 2281278 vp 10000  50 200 Drude
+JOBID=4656164 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4656164 2281278 vp 10000  1000 200 Drude
+JOBID=4656436 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4656436 2281278 vp 10000  1000 200 Drude
+JOBID=4657197 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4657197 2281278 vp 100000  1000 200 Drude
+JOBID=4658394 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/Vr3R4/src/cluster/tbg_observables.jl 1 199 4658394 2281278 vp 100000  1000 200 Drude
