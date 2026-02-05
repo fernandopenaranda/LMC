@@ -5,7 +5,9 @@ function provide_folder_get_observables_atlas_reshuffled(folder, rs = "rs")
        ns_path = str * "/joined_ns_"*rs*".csv"
        ofmats_path = str * "/joined_ofmats_"*rs*".csv"
        s = return_variables_reshuffled(es_path,mus_path, ns_path, ofmats_path )
-       Self_consistent_data(degen_decission(s), s[2], s[3], s[4])
+    #    Self_consistent_data(degen_decission(s), s[2], s[3], s[4])
+       Self_consistent_data(s[1], s[2], s[3], s[4])
+       
 end
 
 "noise instabilities over deg groundstates reduction"
@@ -173,7 +175,7 @@ lmc_spin_sweep(p::ParamsHF, s::Self_consistent_data; kws...) =
 function mr_orb_sweep(obs, p::ParamsHF, s::Self_consistent_data; kws...)
     mc_arr = []
     for (it,ν) in enumerate(s.ns)
-        if it % 50 == 0
+        if it == 130
             mc = obs(
                     xxx_lmc_presets(ParamsHF(p, μ = s.mus[it]),  diagm(s.ofmats[it]); kws...))
             append!(mc_arr, mc)

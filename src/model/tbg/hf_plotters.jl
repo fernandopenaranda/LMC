@@ -130,7 +130,7 @@ function LMC.aux_plot_tbg_obs(presetpath, obspath)
     end
     sorted_inds = sortperm(nus)
     obss = obsmat[sorted_inds]
-    return nus[sorted_inds], obss[sorted_inds]
+    return nus[sorted_inds], obss
 end
 
 

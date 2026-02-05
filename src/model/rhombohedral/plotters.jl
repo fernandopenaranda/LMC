@@ -161,12 +161,12 @@ function LMC.plot_characters(ax, N, U, J, Ezlist, νlist, ns; axisleg = true, co
     else nothing end
     xlims!(ax, xvect[1], xvect[end])
     ylims!(ax, Ezlist[1], Ezlist[end])
-
     levels = [-1, 0, 1, 2]
     if isa(colorlist,Missing) == true
     colors = [:purple, :gray, :blue, :lightblue]
     else colors = colorlist end
-    hm =  heatmap!(ax,  xvect, Ezlist, characters', colormap = colors, levels = levels, colorrange = [-1,2], rasterize = true,dpi = 500)#, rasterize = true)
+    hm =  heatmap!(ax,  xvect, Ezlist, characters', colormap = colors, levels = levels, colorrange = [-1,2], 
+        rasterize = true, dpi = 500)#, rasterize = true)
 end
 
 function prefactor_filling() # in cm^-2
