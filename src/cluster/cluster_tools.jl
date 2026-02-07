@@ -69,7 +69,7 @@ end
 """using the results of the Hartree-Fock algorithm on the THFM we compute for a given observable 
 the Drude, LMC_orbital, LMC_spin, QAH"""
 function slurm_submit_tbg_observable(folder::Union{String,Number}, phase::String;
-    dryrun=false, evals = 10, T = 1, tau = 200, which_observable = "Drude")
+    dryrun=false, evals = 10, T = 1, tau = 200, which_observable = "Drude", berry_contr = true, omm_contr = true)
     lmcfolder = dirname(pathof(LMC)) * "/cluster/tbg_observables.jl"
     script = script_path("run_tbg_observables.sh")
     cmd = `sbatch --wait $script $lmcfolder $folder $phase $evals $T $tau $which_observable $berry_contr $omm_contr`
