@@ -21,7 +21,7 @@ T = parse(Float64, ARGS[7]) # temperature a <= eta/kb ~ 1K, since this is really
 tau = parse(Float64, ARGS[8])
 which_observable = ARGS[9]  # Drude, LMC_orbital, LMC_spin, or QAH
 berry_contr = parse(Bool, ARGS[10])
-omm_contr = Parse(Bool, ARGS[11])
+omm_contr = parse(Bool, ARGS[11])
 
 using JLD2, CSV, DataFrames, LMC, Optics_in_the_length_gauge, LinearAlgebra
 
