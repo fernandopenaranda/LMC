@@ -20,6 +20,8 @@ evals = parse(Int, ARGS[6])
 T = parse(Float64, ARGS[7]) # temperature a <= eta/kb ~ 1K, since this is really a T=0 limit and in the Phase diagram T = 0 and there are only broadening effects
 tau = parse(Float64, ARGS[8])
 which_observable = ARGS[9]  # Drude, LMC_orbital, LMC_spin, or QAH
+berry_contr = parse(Bool, ARGS[10])
+omm_contr = Parse(Bool, ARGS[11])
 
 using JLD2, CSV, DataFrames, LMC, Optics_in_the_length_gauge, LinearAlgebra
 
@@ -55,7 +57,7 @@ elseif which_observable == "LMC_orbital"
     obs = linear_magneto_conductivity_orbital
     press = xxx_lmc_presets(ParamsHF(p, μ = s.mus[job_id+1]), 
         diagm(s.ofmats[job_id+1]), T = T, τ = tau, evals = evals, ϵ = 1e-7,  
-        berry_contribution = true, omm_contribution = true, 
+        berry_contribution = berry_contr, omm_contribution = omm_contr, 
         fermi_surface = false, with_shift= false)
    
 elseif which_observable == "LMC_spin"

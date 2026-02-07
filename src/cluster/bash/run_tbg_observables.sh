@@ -22,13 +22,17 @@ evals=$4
 T=$5
 tau=$6
 which_observable=$7
+berry_contr=$8
+omm_contr=$9
 
 echo "My SLURM_ARRAY_JOB_ID is $SLURM_ARRAY_JOB_ID."
 echo "My SLURM_ARRAY_TASK_ID is $SLURM_ARRAY_TASK_ID"
 echo "Array length: $SLURM_ARRAY_TASK_MAX"
 echo "pathoffile: $pathtofile"
+echo "berry: $berry_contr"
+echo "omm: $omm_contr"
 
-CMD="/scratch/ferpe/julia-1.9.4/bin/julia $pathtofile $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $folder $phase $evals $nu_max $T $tau $which_observable"
+CMD="/scratch/ferpe/julia-1.9.4/bin/julia $pathtofile $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX $SLURM_ARRAY_JOB_ID $folder $phase $evals $nu_max $T $tau $which_observable $berry_contr $omm_contr"
 if [ "${SLURM_ARRAY_TASK_ID:-0}" -eq 1 ]; then
     printf "JOBID=%s CMD=%s\n" "$SLURM_ARRAY_JOB_ID" "$CMD" >> "julia_command_tbg_${which_observable}.txt"
 fi
