@@ -21,8 +21,8 @@ function xxx_lmc_presets(p::ParamsHF, of; T = 1, τ = 200, evals = 100, ϵ = 1e-
     rzmat(q, ψs) = rz(ψs, p, q, of) * 3.3/2 
 
     M, xmin, xmax = LMC.int_boundaries(p)
-    xbounds = [0, xmin[2]]
-    ybounds = [xmax[1]/2, xmax[2]]
+    xbounds = [0, xmax[1]/2]
+    ybounds = [xmin[2], xmax[2]]
     # computation presets
     cpt = Transport_computation_presets(xbounds, ybounds, evals)
     # planar preset object (argument of `Optics_in_the_length_gauge.linear_magneto_conductivity_orbital`)
