@@ -4,10 +4,9 @@ function provide_folder_get_observables_atlas_reshuffled(folder, rs = "rs")
        mus_path = str * "/joined_mus_"*rs*".csv"
        ns_path = str * "/joined_ns_"*rs*".csv"
        ofmats_path = str * "/joined_ofmats_"*rs*".csv"
-    #    s = return_variables_reshuffled(es_path,mus_path, ns_path, ofmats_path )
+       s = return_variables_reshuffled(es_path,mus_path, ns_path, ofmats_path )
        Self_consistent_data(degen_decission(s), s[2], s[3], s[4])
-       Self_consistent_data(s[1], s[2], s[3], s[4])
-       
+    #    Self_consistent_data(s[1], s[2], s[3], s[4])
 end
 
 "noise instabilities over deg groundstates reduction"

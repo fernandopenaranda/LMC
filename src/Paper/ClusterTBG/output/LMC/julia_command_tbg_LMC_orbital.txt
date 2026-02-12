@@ -94,3 +94,10 @@ JOBID=4724107 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packag
 JOBID=4726469 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/pugD2/src/cluster/tbg_observables.jl 1 199 4726469 2281278 vp 200000  0.1 200 LMC_orbital true true
 JOBID=4726575 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/pugD2/src/cluster/tbg_observables.jl 1 199 4726575 2281278 qah 200000  0.5 200 LMC_orbital true true
 JOBID=4727693 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/pugD2/src/cluster/tbg_observables.jl 1 199 4727693 2281278 vp 200000  0.5 200 LMC_orbital true true
+JOBID=4730466 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/wEaGx/src/cluster/tbg_observables.jl 1 199 4730466 2281278 qah 50000  0.5 200 LMC_orbital true true
+JOBID=4731076 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/wEaGx/src/cluster/tbg_observables.jl 1 199 4731076 2281278 qah 50000  0.5 200 LMC_orbital true true
+JOBID=4731118 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/wEaGx/src/cluster/tbg_observables.jl 1 199 4731118 2281278 vp 50000  0.5 200 LMC_orbital true true
+JOBID=4731672 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/wEaGx/src/cluster/tbg_observables.jl 1 199 4731672 2281278 vp 50000  0.5 200 LMC_orbital true true
+JOBID=4731867 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/wEaGx/src/cluster/tbg_observables.jl 1 199 4731867 2281278 qah 200000  0.5 200 LMC_orbital true true
+JOBID=4733585 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/wEaGx/src/cluster/tbg_observables.jl 1 199 4733585 2281278 vp 200000  0.5 200 LMC_orbital true true
+JOBID=4735424 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/wEaGx/src/cluster/tbg_observables.jl 1 199 4735424 2281278 qah 200000  1 200 LMC_orbital true true
