@@ -252,13 +252,10 @@ function hf_valley_spin_hamiltonian!(h, p::ParamsHF, k, of)
     hdim = size(h,1)
     hp = bare_hf_hamiltonian(ParamsHF(p, ν = 1), k)
     hn = bare_hf_hamiltonian(ParamsHF(p, ν = -1), k)
-    tauz_pert = 0 *1I # REMOVE this is a small perturbation required to select a manifold with the same valley polarization. And thus a non jumping inj current. Possibly J fixed this problem
-    h[1:hdim÷4,1:hdim÷4] .= hp + tauz_pert
-    h[1+hdim÷4:2hdim÷4,1+hdim÷4:2hdim÷4]   .= hn - tauz_pert
-    h[1+2hdim÷4:3hdim÷4,1+2hdim÷4:3hdim÷4] .= hp - tauz_pert
-
-    # h[1+2hdim÷4:3hdim÷4,1+2hdim÷4:3hdim÷4] .= hp + 0tauz_pert
-    h[1+3hdim÷4:4hdim÷4,1+3hdim÷4:4hdim÷4] .= hn - tauz_pert
+    h[1:hdim÷4,1:hdim÷4] .= hp .+ (0 .* diagm(ones(hdim÷4)))
+    h[1+hdim÷4:2hdim÷4,1+hdim÷4:2hdim÷4]   .= hn 
+    h[1+2hdim÷4:3hdim÷4,1+2hdim÷4:3hdim÷4] .= hp .+ (0 .* diagm(ones(hdim÷4)))
+    h[1+3hdim÷4:4hdim÷4,1+3hdim÷4:4hdim÷4] .= hn 
     if p.VP == true # this key is not the best name to CHANGE
         vp_sp_sc!(h, of, p) # correlations of typep U and J, perturbation type 
     end

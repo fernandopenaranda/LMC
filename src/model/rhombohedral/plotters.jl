@@ -328,16 +328,16 @@ LMC.plot_lmcspin(ax, pdpath, pdpresetpath; kws...) =
 
 
 function plot_obs(pdpath, pdpresetpath, func; kws...)
-    PID, pdPID, interpPID, evals, Ezs, νlist, matt = aux_plot_obs(pdpath, pdpresetpath, func)
+    PID, pdPID, interpPID, evals, Ezs, νlist, matt = aux_plot_obs(pdpath, pdpresetpath, func, flavor_filling = 1)
     func(PID, pdPID, interpPID, evals, Ezs, prefactor_filling()/ 1e12 .* νlist, matt; kws...)
 end
 
-function plot_obs(ax, pdpath, pdpresetpath, func; flavor_filling = missing , kws...)
+function plot_obs(ax, pdpath, pdpresetpath, func; flavor_filling = 1 , kws...)
     PID, pdPID, interpPID, evals, Ezs, νlist, matt = aux_plot_obs(pdpath, pdpresetpath, func, flavor_filling = flavor_filling)
     func(ax, PID, pdPID, interpPID, evals, Ezs, prefactor_filling()/1e12 .* νlist, matt; kws...)
 end
 
-function plot_obs_spin(ax, pdpath, pdpresetpath, func; flavor_filling = missing , kws...)
+function plot_obs_spin(ax, pdpath, pdpresetpath, func; flavor_filling = 1 , kws...)
     PID, pdPID, interpPID, evals, Ezs, νlist, matt1 = aux_plot_obs(pdpath, pdpresetpath, func, flavor_filling = flavor_filling)
     func(ax, PID, pdPID, interpPID, evals, Ezs, prefactor_filling()/1e12 .* νlist, matt1; kws...)
 end
@@ -366,7 +366,7 @@ function aux_plot_obs(pdpath, pdpresetpath, func; flavor_filling = missing)
         mat = reshape_observables(obsmat[sorted_inds])
         if func == LMC.plot_ahe || func == LMC.plot_lmc
             valley_ordering = reorder_valleys(pdpath, pdpresetpath, flavor_filling)
-            matt = abs.(mat) .* valley_ordering
+            matt = abs.(mat) #.* valley_ordering                    # TEST enable comment in all figures but not absolute
             return PID, pdPID, interpPID, evals, Ezs[sorted_inds], νlist, matt
         elseif func == LMC.plot_drude #|| 
             matt = abs.(mat)

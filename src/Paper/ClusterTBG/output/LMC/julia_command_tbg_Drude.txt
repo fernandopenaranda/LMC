@@ -45,3 +45,6 @@ JOBID=4695483 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packag
 JOBID=4697092 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/bAGQD/src/cluster/tbg_observables.jl 1 199 4697092 2281278 vp 100000  0.25 200 Drude
 JOBID=4697345 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/bAGQD/src/cluster/tbg_observables.jl 1 199 4697345 2281278 vp 100000  0.25 200 Drude
 JOBID=4734502 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/wEaGx/src/cluster/tbg_observables.jl 1 199 4734502 2281278 vp 200000  0.5 200 Drude true true
+JOBID=4739581 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/KWbO8/src/cluster/tbg_observables.jl 1 199 4739581 2281278 vp 400000  0.5 200 Drude true true
+JOBID=4744422 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/KWbO8/src/cluster/tbg_observables.jl 1 199 4744422 2281278 vp 400000  0.25 200 Drude true true
+JOBID=4746508 CMD=/scratch/ferpe/julia-1.9.4/bin/julia /home/ferpe/.julia/packages/LMC/KWbO8/src/cluster/tbg_observables.jl 1 199 4746508 2281278 vp 400000  1 200 Drude true true

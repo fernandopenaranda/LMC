@@ -1,4 +1,4 @@
-module LMC
+module LMC # DEPOT_PATH[:] .= ["/scratch/ferpe/julia_depot"] #environment
     using Arpack
     using LinearAlgebra
     using Cubature

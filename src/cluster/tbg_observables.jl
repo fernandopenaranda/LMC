@@ -52,7 +52,6 @@ if which_observable == "Drude"
     press = xx_drude_presets(ParamsHF(p, μ = s.mus[job_id+1]), 
         diagm(s.ofmats[job_id+1]), T = T, τ = tau, evals = evals)
 
-
 elseif which_observable == "LMC_orbital"
     obs = linear_magneto_conductivity_orbital
     press = xxx_lmc_presets(ParamsHF(p, μ = s.mus[job_id+1]), 

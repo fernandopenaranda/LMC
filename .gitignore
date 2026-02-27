@@ -5,3 +5,5 @@ src/Paper/Figure_2
 # src/Paper/*
 !src/Paper/ClusterTBG/
 src/Paper/ClusterTBG/2281278/*/
+src/Paper/ClusterDATA
+src/Paper/ClusterTBG

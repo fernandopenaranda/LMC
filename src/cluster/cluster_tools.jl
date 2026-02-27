@@ -15,10 +15,10 @@ function slurm_submit_interpolations(;Ezmin = -6, Ezmax = 6,
     dryrun && return cmd
     run(cmd)
     # Capture stdout
-    output = read(cmd, String)
+    # output = read(cmd, String)
     # Example output: "Submitted batch job 3228119\n"
-    jobid = parse(Int, split(output)[end])
-    return jobid
+    #jobid = parse(Int, split(output)[end])
+    #return jobid
 end
  
 """ computes the mus and alphas for the 4 spin/valley flavours
@@ -44,9 +44,9 @@ function slurm_submit_phasediagrams(interpolationsPID::Union{String,Number};
     run(cmd)
 
     # Capture stdout
-    output = read(cmd, String)
+    #output = read(cmd, String)
     # Example output: "Submitted batch job 3228119\n"
-    jobid = parse(Int, split(output)[end])
+    #jobid = parse(Int, split(output)[end])
     return jobid
 end
 
@@ -60,10 +60,10 @@ function slurm_submit_observable(phasediagramPID::Union{String,Number};
     dryrun && return cmd
     run(cmd)
     # Capture stdout
-    output = read(cmd, String)
+    #output = read(cmd, String)
     # Example output: "Submitted batch job 3228119\n"
-    jobid = parse(Int, split(output)[end])
-    return jobid
+    #jobid = parse(Int, split(output)[end])
+    #return jobid
 end
 
 """using the results of the Hartree-Fock algorithm on the THFM we compute for a given observable 

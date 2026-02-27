@@ -116,8 +116,6 @@ performs several random seed calculations of the extrema values of the
 grand potential functional and selects the set of μαs with lower energy.
 Crucially the dos and the occupation are independent of μ and thus are interpolated
 before calling to the optimizer (highly efficient).
-The system in degenerate in spin but not in valley, however the total energy and filling is
-degenerate in valley too.
 The type of potential SU4 or SU2 (ferromagnetic Hunds coupling) is selected by int_model
 I introduce a filling and one Ez
 see: https://doi.org/10.1038/s41586-021-03938-w
@@ -266,7 +264,7 @@ of each of the 4 flavors
 So we take the derivatives of the grand functional which lead (even at finite T) to the 
 following extrema equations F(i) = μ_i - μ + U A * ∑_β≠α n_β = 0 with i and j in 1:4. 
 And reformulate them as an optimization problem so ∑_i(F(i)^2) = 0. This is the quantity
-to optimize in terms of μ_i, not that n_β = ∫₀^β ρ(ϵ) dϵ. Since ρ(ϵ) the dos is the same
+to optimize in terms of μ_i, note that n_β = ∫₀^β ρ(ϵ) dϵ. Since ρ(ϵ) the dos is the same
 for the four flavours in this rigid band (local (q independent) Hartree perturbation) we
 first create this function and interpolate it. We also interpolate the density of states 
 for convenience μ0s are the seeds
