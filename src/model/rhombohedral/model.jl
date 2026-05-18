@@ -152,92 +152,14 @@ mN12xxθ(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3,p) * k^(n1+n2-1) * cis(θ * (n
 )
 
 
-# old: works ok [1]
 # mN12xx(n1,n2,n3, k, θ, p) =  prefactor(n1,n2,n3,p) * k^(n1+n2-2) * cis(θ*(n1-n2)) * (
 #     1im * (n1 - n2)^2*cos(θ-ifelse(p.ξ==1, 0, π))^2 + (n1 - n2) * (-3 + n1 + n2) * cos(θ-ifelse(p.ξ==1, 0, π))*sin(θ-ifelse(p.ξ==1, 0, π)) +
 #     1/2 * (n1+n2) *(n1+n2-1 - (-3 + n1 + n2) *cos(2*(θ-ifelse(p.ξ==1, 0, π))) +  1im*(n1-n2) * sin(2*(θ-ifelse(p.ξ==1, 0, π)))))
 
 
 rzNlg(N, ψs) = d * (N-1) * ψs' * σz * ψs # in Angstroms
+
 #############
 # Pentalayer
 #############
 abc_pentalayer(k::Array, p = params_rhombohedral()) = abc_Nlayer(5, norm(k), atan(k[2], k[1]), p)
-
-# abc_pentalayer(k::Array, p = params_rhombohedral()) = abc_pentalayer(norm(k), atan(k[2], k[1]), p)
-
-# function abc_pentalayer(k::Number, θ, p = params_rhombohedral()) 
-#     Ezterm = p.Delta_Ez *[1 0;0 -1] # oppossite signs top and bottom layer. Preserves PHS
-#     Valleypolarization = p.Valley_asym * [1 0; 0 1] * p.ξ/2
-#     [-p.μ X_5LG(k, θ, p); conj(X_5LG(k, θ, p)) -p.μ] +  y(p)*(k)^2 .* 1I + Ezterm + Valleypolarization + 0*[0 1+1im;1-1im 0]
-# end
-
-# function X_5LG(k, θ, p)
-#     θ += ifelse(p.ξ==1, 0, π) # to account for the two valleys
-#     a(p) * k^5 * cis(5θ) - 
-#     b(p) * k^4 * cis(2θ) +
-#     c(p) * k^3 * cis(-θ) +  # this two are the weaker
-#     d(p) * k^2 * cis(2θ) - 
-#     ϵ(p) * k * cis(-θ) # this two are the weaker
-# end
-
-# a(p) = p.γ0^5 / p.γ1^4 
-# b(p) = 4p.γ0^3*p.γ3/p.γ1^3
-# c(p) = 3p.γ0*p.γ3^2/p.γ1^2
-# d(p) = 3/2 * p.γ2*p.γ0^2/p.γ1^2
-# ϵ(p) = p.γ2*p.γ3/p.γ1
-# y(p) = 2*(p.γ0*p.γ4/p.γ1)
-
-# dhx5lg(k::Array, p) = dhx5lg(norm(k), atan(k[2], k[1]), p)
-# dhy5lg(k::Array, p) = dhy5lg(norm(k), atan(k[2], k[1]), p)
-
-# function dhx5lg(k::Number, θ, p)
-#     θ += ifelse(p.ξ==1, 0, π)
-#     m11 = 2*k*y(p)*cos(θ)
-#     m22 = m11
-#     m12 = m12x(k, θ, p)
-#     return [m11 m12; conj(m12) m22]
-# end
-
-# function dhy5lg(k::Number, θ, p) 
-#     θ += ifelse(p.ξ==1, 0, π)
-#     m11 = 2*k*y(p)*sin(θ)
-#     m22 = m11
-#     m12 = m12y(k, θ, p)
-#     return [m11 m12; conj(m12) m22]
-# end
-
-# m12y(k, θ, p) =  cos(θ-ifelse(p.ξ==1, 0, π)) * dkX5LG(k, θ, p) - 
-#     sin(θ-ifelse(p.ξ==1, 0, π))/k * dθX5LG(k, θ, p) #parece que los ejes est'an girados por eso x->y
-# m12x(k, θ, p) =  sin(θ-ifelse(p.ξ==1, 0, π)) * dkX5LG(k, θ, p) + 
-#     cos(θ-ifelse(p.ξ==1, 0, π))/k * dθX5LG(k, θ, p)
-
-# dkX5LG(k, θ, p) = 5a(p) * k^4 * cis(5θ) - 
-#     4b(p) * k^3 * cis(2θ) +
-#     3c(p) * k^2 * cis(-θ) +
-#     2d(p) * k * cis(2θ) - 
-#     ϵ(p)  * cis(-θ) 
-
-# dθX5LG(k, θ, p) = 1im*(5a(p) * k^5 * cis(5θ) - 
-#     2b(p) * k^4 * cis(2θ) +
-#     -c(p) * k^3 * cis(-θ) +
-#     2d(p) * k^2 * cis(2θ) - 
-#     -ϵ(p) * k * cis(-θ))
-
-# rz5lg(ψs) = rzNlg(5, ψs)
-
- 
-# TEST sigma yyy is 0. Success
-#test to compute yyy ,mN12xx is really mN12yy i have changed x by y in teh velocities too # success :) sigma yyy is 0
-# mN12x(n1,n2,n3, k, θ, p) =  dkcommon(n1,n2,n3, k, θ, p)  * (cos(θ-ifelse(p.ξ==1, 0, π)) *  (n1+n2) * cis(θ*(n1-n2)) - 
-#     sin(θ-ifelse(p.ξ==1, 0, π)) * 1im *(n1-n2) * cis(θ*(n1-n2))) #parece que los ejes est'an girados por eso x->y
-# mN12y(n1,n2,n3, k, θ, p) =  dkcommon(n1,n2,n3, k, θ, p) * p.ξ * (sin(θ-ifelse(p.ξ==1, 0, π)) * (n1+n2) * cis(θ*(n1-n2)) + 
-#    cos(θ-ifelse(p.ξ==1, 0, π)) * 1im *(n1-n2) * cis(θ*(n1-n2)))
-# dkcommon(n1,n2,n3, k, θ, p) = (prefactor(n1,n2,n3, p) * k^(n1+n2-1)) 
-# mN12xx(n1,n2,n3, k, θ, p) =  cos(θ-ifelse(p.ξ==1, 0, π)) * mN12yyk(n1,n2,n3, k, θ, p) - sin(θ-ifelse(p.ξ==1, 0, π))/k * mN12yyθ(n1,n2,n3, k, θ, p)
-# mN12yyk(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3,p) * cis(θ * (n1-n2)) *
-#      (cos(θ-ifelse(p.ξ==1, 0, π)) * (n1+n2) - sin(θ-ifelse(p.ξ==1, 0, π)) * 1im * (n1-n2)) * (n1+n2-1) * k^(n1+n2-2)
-# mN12yyθ(n1,n2,n3, k, θ, p) = prefactor(n1,n2,n3,p) * k^(n1+n2-1) * cis(θ * (n1-n2)) * (
-#      (n1+n2) * (1im *(n1-n2)*cos(θ-ifelse(p.ξ==1, 0, π)) - sin(θ-ifelse(p.ξ==1, 0, π))) + 1im *(n1-n2)* (1im *(n1-n2)*sin(θ-ifelse(p.ξ==1, 0, π)) +cos(θ-ifelse(p.ξ==1, 0, π)))
-# )
-#test
