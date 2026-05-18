@@ -1,14 +1,15 @@
 # LMC
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://fernandopenaranda.github.io/LMC.dev)
-%[![DOI](https://zenodo.org/badge/1103319287.svg)](X)
+%[![DOI](https://zenodo.org/badge/1103319287.svg)](https://doi.org/10.5281/zenodo.20271126)
+
 
 For the sake of reproducibility, we show in this repo: the code, the data files, and the plotting functions used to generate the figures in our work: *Transport signatures of valley polarization in graphene multilayers: In-plane linear magnetoconductivity vs anomalous Hall effect* [arXiv:2605.16061]([https://doi.org/10.48550/arXiv.2501.09703](https://arxiv.org/abs/2605.16061v1))
 
 Remarks:  
 
-0. All the code provided here is written in Julia (v1.0 >)
-1. Data files used to build each figure can be either directly accessed at `LMC/src/Paper/Publication_datafiles` or generated using ipynb files: LMC/src/Paper/
+1. All the code provided here is written in Julia (v1.0 >)
+2. Data files used to build each figure can be either directly accessed at `LMC/src/Paper/Publication_datafiles` or generated using ipynb files: LMC/src/Paper/
 
 ## Installation
 
