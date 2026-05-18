@@ -1,7 +1,7 @@
 # LMC
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://fernandopenaranda.github.io/LMC.dev)
-%[![DOI](https://zenodo.org/badge/1103319287.svg)](https://doi.org/10.5281/zenodo.20271126)
+[![DOI](https://zenodo.org/badge/1103319287.svg)](https://doi.org/10.5281/zenodo.20271126)
 
 
 For the sake of reproducibility, we show in this repo: the code, the data files, and the plotting functions used to generate the figures in our work: *Transport signatures of valley polarization in graphene multilayers: In-plane linear magnetoconductivity vs anomalous Hall effect* [arXiv:2605.16061]([https://doi.org/10.48550/arXiv.2501.09703](https://arxiv.org/abs/2605.16061v1))
